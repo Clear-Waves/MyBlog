@@ -12,3 +12,6 @@ mybatis:
   mapper-locations:
     - classpath*:mapper/*.xml
   type-aliases-package: cdu.cyj.entity
+pagehelper:
+  reasonable: true
+

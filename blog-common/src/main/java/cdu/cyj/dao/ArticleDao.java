@@ -86,5 +86,29 @@ public interface ArticleDao {
      * @return 热门文章列表
      */
     List<Article> queryHotArticleList(Integer count);
+
+    /**
+     * 通过状态码查询
+     *
+     * @return 对象列表
+     */
+    List<Article> queryAllByStatus(Integer status);
+
+    /**
+     * 通过分类Id查找文章Id列表
+     *
+     * @param categoryId 分类Id
+     * @return Id列表
+     */
+    List<Integer> queryIdsByCategoryId(Integer categoryId);
+
+    /**
+     * 通过 Id列表 & 状态码 查询对应的文章列表（批量查询）
+     *
+     * @param ids Id列表
+     * @param status 状态码
+     * @return 文章列表
+     */
+    List<Article> queryAllByIdsAndStatus(@Param("ids") List<Integer> ids, @Param("status") Integer status);
 }
 

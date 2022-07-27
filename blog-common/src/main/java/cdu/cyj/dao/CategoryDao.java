@@ -13,6 +13,13 @@ import java.util.List;
 public interface CategoryDao {
 
     /**
+     * 通过状态码查询所有记录
+     * @param status 状态码
+     * @return 对象列表
+     */
+    List<Category> queryAllByStatus(Integer status);
+
+    /**
      * 通过ID查询单条数据
      *
      * @param id 主键
@@ -69,5 +76,28 @@ public interface CategoryDao {
      */
     int deleteById(Integer id);
 
+    /**
+     * 通过Id列表查询分类列表
+     *
+     * @param ids Id列表
+     * @return 分类列表
+     */
+    List<Category> queryAllByIds(@Param("ids") List<Integer> ids);
+
+    /**
+     * 通过文章Id列表查询分类Id列表
+     *
+     * @param ids 文章Id列表
+     * @return 分类Id列表
+     */
+    List<Integer> queryIdsByArticleIds(@Param("ids") List<Integer> ids);
+
+    /**
+     * 通过文章Id查询分类Id
+     *
+     * @param articleId 文章Id
+     * @return 分类Id
+     */
+    Integer queryIdByArticleId(Integer articleId);
 }
 

@@ -4,12 +4,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class CategoryVo {
+import java.util.List;
 
-    private Integer id;
-    private String name;
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class PageVo {
+
+    private List<?> rows;
+
+    private Integer total;
 
 }

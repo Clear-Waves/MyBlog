@@ -2,6 +2,16 @@ package cdu.cyj.constants;
 
 public class SystemConstants {
 
+    // 查询热门文章个数
     public static final Integer HOT_ARTICLE_COUNT = 2;
+
+    // 文章正常状态代码
+    public static final Integer ARTICLE_NORMAL_STATUS = 1;
+
+    // 分类正常状态代码
+    public static final Integer CATEGORY_NORMAL_STATUS = 0;
+
+    // 审核通过状态代码
+    public static final Integer LINK_APPROVED_STATUS = 0;
 
 }

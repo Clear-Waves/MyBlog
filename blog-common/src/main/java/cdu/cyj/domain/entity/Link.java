@@ -8,31 +8,28 @@ import java.util.Date;
 import java.io.Serializable;
 
 /**
- * (Category)实体类
+ * (Link)实体类
  *
  * @author makejava
- * @since 2022-07-25 10:04:34
+ * @since 2022-07-27 09:54:35
  */
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class Category implements Serializable {
-    private static final long serialVersionUID = 290976708130709206L;
+@NoArgsConstructor
+public class Link implements Serializable {
+    private static final long serialVersionUID = -65558140863542709L;
     
     private Integer id;
-    /**
-     * 分类名称
-     */
+    
     private String name;
-    /**
-     * 父分类id
-     */
-    private Integer pid;
+    
+    private String logo;
     
     private String description;
+    
+    private String address;
     /**
-     * 状态：0正常，1禁用，-1删除
+     * 0：正常；-1：删除；1：未通过，2：未审核
      */
     private Integer status;
     

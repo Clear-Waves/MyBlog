@@ -7,9 +7,16 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CategoryVo {
+public class LinkVo {
 
     private Integer id;
+
     private String name;
+
+    private String logo;
+
+    private String description;
+
+    private String address;
 
 }

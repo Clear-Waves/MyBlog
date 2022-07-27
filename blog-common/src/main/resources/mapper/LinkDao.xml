@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="cdu.cyj.dao.CategoryDao">
+<mapper namespace="cdu.cyj.dao.LinkDao">
 
-    <resultMap id="BaseResultMap" type="cdu.cyj.domain.entity.Category">
-        <!--@Table table_category-->
+    <resultMap id="BaseResultMap" type="cdu.cyj.domain.entity.Link">
+        <!--@Table table_link-->
         <result property="id" column="id" jdbcType="INTEGER"/>
         <result property="name" column="name" jdbcType="VARCHAR"/>
-        <result property="pid" column="pid" jdbcType="INTEGER"/>
+        <result property="logo" column="logo" jdbcType="VARCHAR"/>
         <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="address" column="address" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
         <result property="createBy" column="create_by" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -18,16 +19,16 @@
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
         select
-          id, name, pid, description, status, create_by, create_time, update_by, update_time
-        from table_category
+          id, name, logo, description, address, status, create_by, create_time, update_by, update_time
+        from table_link
         where id = #{id}
     </select>
 
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
         select
-          id, name, pid, description, status, create_by, create_time, update_by, update_time
-        from table_category
+          id, name, logo, description, address, status, create_by, create_time, update_by, update_time
+        from table_link
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -35,11 +36,14 @@
             <if test="name != null and name != ''">
                 and name = #{name}
             </if>
-            <if test="pid != null">
-                and pid = #{pid}
+            <if test="logo != null and logo != ''">
+                and logo = #{logo}
             </if>
             <if test="description != null and description != ''">
                 and description = #{description}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
             </if>
             <if test="status != null">
                 and status = #{status}
@@ -57,19 +61,19 @@
                 and update_time = #{updateTime}
             </if>
         </where>
-        limit #{offset}, #{pageSize}
+        limit #{pageable.offset}, #{pageable.pageSize}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          id, name, pid, description, status, create_by, create_time, update_by, update_time
-        from myBlog.table_category
+          id, name, logo, description, address, status, create_by, create_time, update_by, update_time
+        from myBlog.table_link
     </select>
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
         select count(1)
-        from table_category
+        from table_link
         <where>
             <if test="id != null">
                 and id = #{id}
@@ -77,11 +81,14 @@
             <if test="name != null and name != ''">
                 and name = #{name}
             </if>
-            <if test="pid != null">
-                and pid = #{pid}
+            <if test="logo != null and logo != ''">
+                and logo = #{logo}
             </if>
             <if test="description != null and description != ''">
                 and description = #{description}
+            </if>
+            <if test="address != null and address != ''">
+                and address = #{address}
             </if>
             <if test="status != null">
                 and status = #{status}
@@ -100,70 +107,36 @@
             </if>
         </where>
     </select>
-
-    <!--查询所有可用的分类列表 同时过滤分类下没有具体文章的分类-->
-    <select id="queryAvailable" resultMap="BaseResultMap">
-        select *
-        from myBlog.table_category t1
-        where status = 0
-        and
-        (select count(category_id) from table_category_article_ref where category_id = t1.id) > 0
-    </select>
-
-    <!--通过状态查询分类列表-->
     <select id="queryAllByStatus" resultMap="BaseResultMap">
-        select *
-        from myBlog.table_category
-        where status = #{status}
-    </select>
-
-    <!-- 通过id列表查询 -->
-    <select id="queryAllByIds" resultMap="BaseResultMap">
-        select *
-        from myBlog.table_category
-        where id in
-        <foreach collection="ids" item="id" open="(" close=")" separator=",">
-            #{id}
-        </foreach>
-    </select>
-    <select id="queryIdsByArticleIds" resultType="java.lang.Integer">
-        SELECT category_id
-        FROM table_category_article_ref
-        WHERE article_id IN
-        <foreach collection="ids" item="id" open="(" close=")" separator=",">
-            #{id}
-        </foreach>
-    </select>
-    <select id="queryIdByArticleId" resultType="java.lang.Integer">
-        SELECT category_id
-        FROM table_category_article_ref
-        WHERE article_id = #{articleId}
+        SELECT * FROM	table_link
+        WHERE `status` = #{status}
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into table_category(name, pid, description, status, create_by, create_time, update_by, update_time)
-        values (#{name}, #{pid}, #{description}, #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+        insert into table_link(name, logo, description, address, status, create_by, create_time, update_by, update_time)
+        values (#{name}, #{logo}, #{description}, #{address}, #{status}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into table_category(name, pid, description, status, create_by, create_time, update_by, update_time)
+        insert into table_link(name, logo, description, address, status, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.name}, #{entity.pid}, #{entity.description}, #{entity.status}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+        (#{entity.name}, #{entity.logo}, #{entity.description}, #{entity.address}, #{entity.status}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into table_category(name, pid, description, status, create_by, create_time, update_by, update_time)
+        insert into table_link(name, logo, description, address, status, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.name}, #{entity.pid}, #{entity.description}, #{entity.status}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+            (#{entity.name}, #{entity.logo}, #{entity.description}, #{entity.address}, #{entity.status}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
         </foreach>
         on duplicate key update
         name = values(name),
-        pid = values(pid),
+        logo = values(logo),
         description = values(description),
+        address = values(address),
         status = values(status),
         create_by = values(create_by),
         create_time = values(create_time),
@@ -173,16 +146,19 @@
 
     <!--通过主键修改数据-->
     <update id="update">
-        update table_category
+        update table_link
         <set>
             <if test="name != null and name != ''">
                 name = #{name},
             </if>
-            <if test="pid != null">
-                pid = #{pid},
+            <if test="logo != null and logo != ''">
+                logo = #{logo},
             </if>
             <if test="description != null and description != ''">
                 description = #{description},
+            </if>
+            <if test="address != null and address != ''">
+                address = #{address},
             </if>
             <if test="status != null">
                 status = #{status},
@@ -205,7 +181,7 @@
 
     <!--通过主键删除-->
     <delete id="deleteById">
-        delete from table_category where id = #{id}
+        delete from table_link where id = #{id}
     </delete>
 
 </mapper>

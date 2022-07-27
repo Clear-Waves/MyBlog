@@ -2,7 +2,6 @@ package cdu.cyj.service;
 
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.Article;
-import cdu.cyj.domain.vo.HotArticleVo;
 
 import java.util.List;
 
@@ -57,5 +56,23 @@ public interface ArticleService {
      *
      * @return 统一结果对象
      */
-    ResponseResult<List<HotArticleVo>> getHotArticleList();
+    ResponseResult<?> getHotArticleList();
+
+    /**
+     * 查询文章列表
+     *
+     * @param pageNum 页码
+     * @param pageSize 一页的内容数
+     * @param categoryId 分类id
+     * @return 统一返回结果
+     */
+    ResponseResult<?> articleList(Integer pageNum, Integer pageSize, Integer categoryId);
+
+    /**
+     * 查询文章详情
+     *
+     * @param id 文章id
+     * @return 统一返回结果
+     */
+    ResponseResult<?> getArticle(Integer id);
 }

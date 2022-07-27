@@ -15,12 +15,13 @@
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="summary" column="summary" jdbcType="VARCHAR"/>
+        <result property="thumbnail" column="thumbnail" jdbcType="VARCHAR"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
         select
-          id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary
+          id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail
         from table_article
         where id = #{id}
     </select>
@@ -28,7 +29,7 @@
     <!--查询指定行数据-->
     <select id="queryAllByLimit" resultMap="BaseResultMap">
         select
-          id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary
+          id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail
         from table_article
         <where>
             <if test="id != null">
@@ -64,14 +65,16 @@
             <if test="summary != null and summary != ''">
                 and summary = #{summary}
             </if>
+            <if test="thumbnail != null and thumbnail != ''">
+                and thumbnail = #{thumbnail}
+            </if>
         </where>
-        limit #{pageable.offset}, #{pageable.pageSize}
     </select>
 
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary
+          id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail
         from myBlog.table_article
     </select>
     <!--统计总行数-->
@@ -112,6 +115,9 @@
             <if test="summary != null and summary != ''">
                 and summary = #{summary}
             </if>
+            <if test="thumbnail != null and thumbnail != ''">
+                and thumbnail = #{thumbnail}
+            </if>
         </where>
     </select>
 
@@ -119,28 +125,48 @@
     <select id="queryHotArticleList" resultMap="BaseResultMap">
         select * from table_article where status = 1
         order by view_count
-        desc limit 0, #{count};
+        desc limit 0, #{count}
+    </select>
+    <select id="queryAllByStatus" resultMap="BaseResultMap">
+        select * from  table_article where status = #{status}
+        order by create_time desc
+    </select>
+    <select id="queryIdsByCategoryId" resultType="java.lang.Integer">
+        SELECT article_id
+        FROM table_category_article_ref
+        WHERE category_id = #{categoryId}
+    </select>
+    <select id="queryAllByIdsAndStatus" resultMap="BaseResultMap">
+        SELECT *
+        FROM table_article
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        AND
+        status = #{status}
+        order by create_time desc
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into table_article(title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary)
-        values (#{title}, #{content}, #{viewCount}, #{likeCount}, #{commentCount}, #{status}, #{userId}, #{createTime}, #{updateTime}, #{summary})
+        insert into table_article(title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail)
+        values (#{title}, #{content}, #{viewCount}, #{likeCount}, #{commentCount}, #{status}, #{userId}, #{createTime}, #{updateTime}, #{summary}, ${thumbnail})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into table_article(title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary)
+        insert into table_article(title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.title}, #{entity.content}, #{entity.viewCount}, #{entity.likeCount}, #{entity.commentCount}, #{entity.status}, #{entity.userId}, #{entity.createTime}, #{entity.updateTime}, #{entity.summary})
+        (#{entity.title}, #{entity.content}, #{entity.viewCount}, #{entity.likeCount}, #{entity.commentCount}, #{entity.status}, #{entity.userId}, #{entity.createTime}, #{entity.updateTime}, #{entity.summary}, #{entity.thumbnail})
         </foreach>
     </insert>
 
     <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into table_article(title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary)
+        insert into table_article(title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail)
         values
         <foreach collection="entities" item="entity" separator=",">
-            (#{entity.title}, #{entity.content}, #{entity.viewCount}, #{entity.likeCount}, #{entity.commentCount}, #{entity.status}, #{entity.userId}, #{entity.createTime}, #{entity.updateTime}, #{entity.summary})
+            (#{entity.title}, #{entity.content}, #{entity.viewCount}, #{entity.likeCount}, #{entity.commentCount}, #{entity.status}, #{entity.userId}, #{entity.createTime}, #{entity.updateTime}, #{entity.summary}, #{entity.thumbnail})
         </foreach>
         on duplicate key update
         title = values(title),
@@ -152,7 +178,8 @@
         user_id = values(user_id),
         create_time = values(create_time),
         update_time = values(update_time),
-        summary = values(summary)
+        summary = values(summary),
+        thumbnail = values(thumbnail)
     </insert>
 
     <!--通过主键修改数据-->
@@ -188,6 +215,9 @@
             </if>
             <if test="summary != null and summary != ''">
                 summary = #{summary},
+            </if>
+            <if test="thumbnail != null and thumbnail != ''">
+                thumbnail = #{thumbnail}
             </if>
         </set>
         where id = #{id}
