@@ -8,6 +8,10 @@ spring:
       username: ChenYujie
       password: Cheng125835+-
       driver-class-name: com.mysql.cj.jdbc.Driver
+  redis:
+    host: 8.130.173.216
+    port: 6379
+    password: Cheng125835
 mybatis:
   mapper-locations:
     - classpath*:mapper/*.xml

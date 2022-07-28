@@ -28,9 +28,9 @@ public class ResponseResult<T> implements Serializable {
         this.msg = msg;
     }
 
-    public static ResponseResult<?> errorResult(int code, String msg) {
+    public static ResponseResult<?> errorResult(AppHttpCodeEnum appHttpCodeEnum) {
         ResponseResult<?> result = new ResponseResult<>();
-        return result.error(code, msg);
+        return result.error(appHttpCodeEnum.getCode(), appHttpCodeEnum.getMsg());
     }
 
     public static ResponseResult<?> okResult() {
@@ -54,7 +54,7 @@ public class ResponseResult<T> implements Serializable {
     }
 
     private ResponseResult<?> error(Integer code, String msg) {
-        return new ResponseResult<>(AppHttpCodeEnum.SYSTEM_ERROR.getCode(), AppHttpCodeEnum.SYSTEM_ERROR.getMsg());
+        return new ResponseResult<>(code, msg);
     }
 
     private ResponseResult<?> ok(Integer code, Object data, String msg) {

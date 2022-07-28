@@ -17,7 +17,7 @@
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <project.build.sourceEcoding>UTF-8</project.build.sourceEcoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <common.version>0.0.1-SNAPSHOT</common.version>
         <admin.version>0.0.1-SNAPSHOT</admin.version>
         <portal.version>0.0.1-SNAPSHOT</portal.version>
@@ -75,8 +75,14 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
             </plugin>
         </plugins>
     </build>

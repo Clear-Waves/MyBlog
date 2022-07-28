@@ -1,13 +1,10 @@
 package cdu.cyj.contorller;
 
 import cdu.cyj.domain.ResponseResult;
+import cdu.cyj.domain.entity.User;
 import cdu.cyj.service.LoginService;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/")
@@ -17,9 +14,9 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseResult<?> portalLogin(@RequestParam User user) {
+    public ResponseResult<?> portalLogin(@RequestBody User user) {
 
-        return null;
+        return loginService.login(user);
 
     }
 
