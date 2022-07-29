@@ -1,6 +1,8 @@
 package cdu.cyj.config;
 
 import cdu.cyj.filter.JwtAuthenticationTokenFilter;
+import cdu.cyj.handler.security.AccessDeniedHandlerImpl;
+import cdu.cyj.handler.security.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +32,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private JwtAuthenticationTokenFilter jwtAuthenticationTokenFilter;
 
+    @Autowired
+    private AuthenticationEntryPointImpl authenticationEntryPoint;
+
+    @Autowired
+    private AccessDeniedHandlerImpl accessDeniedHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
@@ -43,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 允许login路径匿名访问
                 .antMatchers("/login").anonymous()
                 .antMatchers("/link/getAllLink").authenticated()
+                .antMatchers("/logout").authenticated()
                 // 允许其他所有路径
                 .anyRequest().permitAll();
 
@@ -53,6 +62,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         // 添加自定义过滤器
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
+
+        // 配置自定义认证失败返回
+        http.exceptionHandling()
+                .accessDeniedHandler(accessDeniedHandler)
+                .authenticationEntryPoint(authenticationEntryPoint);
 
     }
 

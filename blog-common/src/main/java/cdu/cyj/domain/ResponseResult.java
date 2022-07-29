@@ -33,6 +33,11 @@ public class ResponseResult<T> implements Serializable {
         return result.error(appHttpCodeEnum.getCode(), appHttpCodeEnum.getMsg());
     }
 
+    public static ResponseResult<?> errorResult(Integer code, String msg) {
+        ResponseResult<?> result = new ResponseResult<>();
+        return result.error(code, msg);
+    }
+
     public static ResponseResult<?> okResult() {
         return new ResponseResult<>();
     }

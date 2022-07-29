@@ -57,8 +57,8 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         // 解析token
         String userId = claims.getSubject();
         // 查询redis
-        JSONObject cacheObject = redisCache.getCacheObject("bloglogin:" + userId);
-        LoginUser loginUser = cacheObject.toJavaObject(LoginUser.class);
+        LoginUser loginUser = redisCache.getCacheObject("bloglogin:" + userId);
+        //LoginUser loginUser = cacheObject.toJavaObject(LoginUser.class);
 
         if (Objects.isNull(loginUser)) {
             // 登录过期
