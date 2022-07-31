@@ -142,26 +142,45 @@
             </if>
         </where>
     </select>
-    <select id="queryAllByStatusAndArticleIdAndRootId" resultMap="BaseResultMap">
+    <select id="queryAllByStatusAndTypeAndArticleIdAndRootId" resultMap="BaseResultMap">
         SELECT * FROM table_comment
         WHERE status = #{status}
+        AND
+        type = #{type}
         AND
         article_id = #{articleId}
         AND
         root_id = #{rootId}
+        ORDER BY create_time
+    </select>
+    <select id="queryAllByStatusAndTypeAndRootId" resultMap="BaseResultMap">
+        SELECT * FROM table_comment
+        WHERE status = #{status}
+        AND
+        type = #{type}
+        AND
+        root_id = #{rootId}
+        ORDER BY create_time
+    </select>
+    <select id="queryAllByStatusAndRootId" resultMap="BaseResultMap">
+        SELECT * FROM table_comment
+        WHERE status = #{status}
+        AND
+        root_id = #{rootId}
+        ORDER BY create_time
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into table_comment(content, article_id, user_id, level, father_id, type, status, root_id, to_comment_user_id, to_comment_id, create_by, create_time, update_by, update_time)
-        values (#{content}, #{articleId}, #{userId}, #{level}, #{fatherId}, #{type}, #{status}, #{rootId}, #{toCommentUserId}, #{toCommentId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
+        insert into table_comment(content, article_id, user_id, level, father_id, type, root_id, to_comment_user_id, to_comment_id, create_by, create_time, update_by, update_time)
+        values (#{content}, #{articleId}, #{userId}, #{level}, #{fatherId}, #{type}, #{rootId}, #{toCommentUserId}, #{toCommentId}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
-        insert into table_comment(content, article_id, user_id, level, father_id, type, status, root_id, to_comment_user_id, to_comment_id, create_by, create_time, update_by, update_time)
+        insert into table_comment(content, article_id, user_id, level, father_id, type, root_id, to_comment_user_id, to_comment_id, create_by, create_time, update_by, update_time)
         values
         <foreach collection="entities" item="entity" separator=",">
-        (#{entity.content}, #{entity.articleId}, #{entity.userId}, #{entity.level}, #{entity.fatherId}, #{entity.type}, #{entity.status}, #{entity.rootId}, #{entity.toCommentUserId}, #{entity.toCommentId}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
+        (#{entity.content}, #{entity.articleId}, #{entity.userId}, #{entity.level}, #{entity.fatherId}, #{entity.type}, #{entity.rootId}, #{entity.toCommentUserId}, #{entity.toCommentId}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime})
         </foreach>
     </insert>
 

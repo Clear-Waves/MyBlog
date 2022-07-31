@@ -1,6 +1,7 @@
 package cdu.cyj.service;
 
 import cdu.cyj.domain.ResponseResult;
+import cdu.cyj.domain.entity.Comment;
 
 public interface CommentService {
 
@@ -14,4 +15,7 @@ public interface CommentService {
      */
     ResponseResult<?> commentList(Integer articleId, Integer pageNum, Integer pageSize);
 
+    ResponseResult<?> addComment(Comment comment);
+
+    ResponseResult<?> linkCommentList(Integer pageNum, Integer pageSize);
 }

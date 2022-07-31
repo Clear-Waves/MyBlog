@@ -1,11 +1,10 @@
 package cdu.cyj.contorller;
 
 import cdu.cyj.domain.ResponseResult;
+import cdu.cyj.domain.entity.Comment;
 import cdu.cyj.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/comment")
@@ -19,6 +18,19 @@ public class CommentController {
 
         return commentService.commentList(articleId, pageNum, pageSize);
 
+    }
+
+
+    @PostMapping
+    public ResponseResult<?> addComment(@RequestBody Comment comment) {
+
+        return commentService.addComment(comment);
+
+    }
+
+    @GetMapping("/linkCommentList")
+    public ResponseResult<?> linkCommentList(Integer pageNum, Integer pageSize) {
+        return commentService.linkCommentList(pageNum, pageSize);
     }
 
 }

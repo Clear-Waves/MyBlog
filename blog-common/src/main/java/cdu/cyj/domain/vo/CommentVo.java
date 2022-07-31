@@ -26,6 +26,8 @@ public class CommentVo {
 
     private Integer toCommentUserId;
 
+    private String toCommentUserName;
+
     private Integer toCommentId;
 
     private Integer createBy;

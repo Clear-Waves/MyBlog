@@ -89,7 +89,25 @@ public interface CommentDao {
      * @param rootId 根评论id
      * @return 评论列表
      */
-    List<Comment> queryAllByStatusAndArticleIdAndRootId(@Param("status") Integer status,@Param("articleId")Integer articleId, @Param("rootId")Integer rootId);
+    List<Comment> queryAllByStatusAndTypeAndArticleIdAndRootId(@Param("status") Integer status, @Param("type") Integer type, @Param("articleId")Integer articleId, @Param("rootId")Integer rootId);
+
+    /**
+     * 通过状态码、根评论id查询
+     *
+     * @param status 状态码
+     * @param rootId 跟评论id
+     * @return 评论列表
+     */
+    List<Comment> queryAllByStatusAndTypeAndRootId(@Param("status")Integer status, @Param("type") Integer type, @Param("rootId")Integer rootId);
+
+    /**
+     * 通过状态码、根评论id查询
+     *
+     * @param status 状态码
+     * @param rootId 跟评论id
+     * @return 评论列表
+     */
+    List<Comment> queryAllByStatusAndRootId(@Param("status")Integer status, @Param("rootId")Integer rootId);
 
 }
 
