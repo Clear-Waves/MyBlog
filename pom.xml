@@ -25,6 +25,7 @@
         <fastjson.version>1.2.72</fastjson.version>
         <pagehelper.version>1.4.1</pagehelper.version>
         <jwt.version>0.9.0</jwt.version>
+        <qiniuyun.version>[7.7.0, 7.10.99]</qiniuyun.version>
     </properties>
 
     <dependencyManagement>
@@ -68,6 +69,13 @@
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
                 <version>${jwt.version}</version>
+            </dependency>
+
+            <!-- 7牛云 -->
+            <dependency>
+                <groupId>com.qiniu</groupId>
+                <artifactId>qiniu-java-sdk</artifactId>
+                <version>${qiniuyun.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -18,4 +18,7 @@ mybatis:
   type-aliases-package: cdu.cyj.entity
 pagehelper:
   reasonable: true
-
+oss:
+  accessKey: dhHUdry64TNgJTOxeR1uYndKoNYmZ7YlxsNiCZUd
+  secretKey: wBJdWuMEeJT3rXV-F3GNTJiFPzmOyX5JbeOWOKtB
+  bucket: myblogoss

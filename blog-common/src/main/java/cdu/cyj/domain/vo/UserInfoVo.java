@@ -13,7 +13,7 @@ public class UserInfoVo {
 
     private String nickName;
 
-    private String sex;
+    private Integer sex;
 
     private String email;
 

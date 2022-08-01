@@ -19,6 +19,13 @@ public class AutoFilledUtils {
             Method setCreateBy = tClass.getMethod("setCreateBy", Integer.class);
             setCreateBy.invoke(t, SecurityUtils.getUserId());
 
+            // 填充updateTime
+            Method setUpdateTime = tClass.getMethod("setUpdateTime", Date.class);
+            setCreateTime.invoke(t, new Date());
+            // 填充updateBy
+            Method setUpdateBy = tClass.getMethod("setUpdateBy", Integer.class);
+            setCreateBy.invoke(t, SecurityUtils.getUserId());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -33,11 +40,11 @@ public class AutoFilledUtils {
 
         try {
             // 填充updateTime
-            Method setCreateTime = tClass.getMethod("setUpdateTime", Date.class);
-            setCreateTime.invoke(t, new Date());
+            Method setUpdateTime = tClass.getMethod("setUpdateTime", Date.class);
+            setUpdateTime.invoke(t, new Date());
             // 填充updateBy
-            Method setCreateBy = tClass.getMethod("setUpdateBy", Integer.class);
-            setCreateBy.invoke(t, SecurityUtils.getUserId());
+            Method setUpdateBy = tClass.getMethod("setUpdateBy", Integer.class);
+            setUpdateBy.invoke(t, SecurityUtils.getUserId());
 
         } catch (Exception e) {
             e.printStackTrace();
