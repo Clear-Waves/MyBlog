@@ -27,6 +27,7 @@ public class OssUploadService implements UploadService {
     private String accessKey;
     private String secretKey;
     private String bucket;
+    private String domain;
 
     @Override
     public ResponseResult<?> uploadImg(MultipartFile img) {
@@ -63,7 +64,7 @@ public class OssUploadService implements UploadService {
                 Response response = uploadManager.put(stream, key, upToken,null, null);
                 //解析上传成功的结果
                 DefaultPutRet putRet = new Gson().fromJson(response.bodyString(), DefaultPutRet.class);
-                return "http://rfxgxvtms.hn-bkt.clouddn.com/" + filePath;
+                return domain + filePath;
             } catch (QiniuException ex) {
                 Response r = ex.response;
                 System.err.println(r.toString());

@@ -11,20 +11,29 @@ public class AutoFilledUtils {
 
         Class<?> tClass = t.getClass();
 
+        // 获取当前用户id
+        int userId;
         try {
+
+            try {
+                userId = SecurityUtils.getUserId();
+            } catch (Exception e) {
+                userId = -1;
+                e.printStackTrace();
+            }
+
             // 填充createTime
             Method setCreateTime = tClass.getMethod("setCreateTime", Date.class);
             setCreateTime.invoke(t, new Date());
             // 填充createBy
             Method setCreateBy = tClass.getMethod("setCreateBy", Integer.class);
-            setCreateBy.invoke(t, SecurityUtils.getUserId());
-
+            setCreateBy.invoke(t, userId);
             // 填充updateTime
             Method setUpdateTime = tClass.getMethod("setUpdateTime", Date.class);
-            setCreateTime.invoke(t, new Date());
+            setUpdateTime.invoke(t, new Date());
             // 填充updateBy
             Method setUpdateBy = tClass.getMethod("setUpdateBy", Integer.class);
-            setCreateBy.invoke(t, SecurityUtils.getUserId());
+            setUpdateBy.invoke(t, userId);
 
         } catch (Exception e) {
             e.printStackTrace();

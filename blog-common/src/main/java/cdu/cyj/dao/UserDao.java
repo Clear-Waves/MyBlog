@@ -88,5 +88,29 @@ public interface UserDao {
      */
     User queryByUserName(String userName);
 
+    /**
+     * 判断用户名是否存在
+     *
+     * @param userName 用户名
+     * @return 1：存在 null: 不存在
+     */
+    Integer userNameExist(String userName);
+
+    /**
+     * 昵称是否存在
+     *
+     * @param nickName 昵称
+     * @return 1：存在 null: 不存在
+     */
+    Integer nickNameExist(String nickName);
+
+    /**
+     * 邮箱是否已经存在
+     *
+     * @param email 邮箱
+     * @return 1：存在 null: 不存在
+     */
+    Integer emailExist(String email);
+
 }
 

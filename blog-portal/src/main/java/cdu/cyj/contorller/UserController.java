@@ -1,5 +1,6 @@
 package cdu.cyj.contorller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.User;
 import cdu.cyj.service.UserService;
@@ -19,8 +20,14 @@ public class UserController {
     }
 
     @PutMapping("/userInfo")
+    @SystemLog(businessName = "更新用户信息")
     public ResponseResult<?> updateUserInfo(@RequestBody User user) {
         return userService.updateUserInfo(user);
+    }
+
+    @PostMapping("/register")
+    public ResponseResult<?> register(@RequestBody User user) {
+        return userService.register(user);
     }
 
 }

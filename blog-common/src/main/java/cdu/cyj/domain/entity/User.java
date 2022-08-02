@@ -42,6 +42,10 @@ public class User implements Serializable {
     private Date createTime;
     
     private Date updateTime;
+
+    private Integer updateBy;
+
+    private Integer createBy;
     
     private String avatar;
 

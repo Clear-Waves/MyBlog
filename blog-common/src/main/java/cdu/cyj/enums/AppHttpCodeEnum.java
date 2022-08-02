@@ -14,7 +14,9 @@ public enum AppHttpCodeEnum {
     LOGIN_ERROR(505, "用户名或密码错误"),
     ADD_ERROR(506, "添加记录失败"),
     CONTENT_NOT_NULL(507, "评论不能为空"),
-    FILE_TYPE_ERROR(508, "文件类型错误");
+    FILE_TYPE_ERROR(508, "文件类型错误"),
+    PARAMETER_ERROR(509, "参数错误");
+
 
     int code;
     String msg;

@@ -8,4 +8,6 @@ public interface UserService {
     ResponseResult<?> userInfo();
 
     ResponseResult<?> updateUserInfo(User user);
+
+    ResponseResult<?> register(User user);
 }

@@ -15,6 +15,8 @@
         <result property="status" column="status" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
         <result property="avatar" column="avatar_url" jdbcType="VARCHAR"/>
     </resultMap>
 
@@ -125,11 +127,26 @@
         select * from table_user
         where user_name = #{userName}
     </select>
+    <select id="userNameExist" resultType="java.lang.Integer">
+        select 1 from table_user
+        where user_name = #{userName}
+        limit 1
+    </select>
+    <select id="nickNameExist" resultType="java.lang.Integer">
+        select 1 from table_user
+        where nick_name = #{nickName}
+        limit 1
+    </select>
+    <select id="emailExist" resultType="java.lang.Integer">
+        select 1 from table_user
+        where email = #{email}
+        limit 1
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into table_user(user_name, pass_word, nick_name, gender, age, tel, email, status, create_time, update_time, avatar_url)
-        values (#{userName}, #{passWord}, #{nickName}, #{gender}, #{age}, #{tel}, #{email}, #{status}, #{createTime}, #{updateTime}, #{avatarUrl})
+        insert into table_user(user_name, pass_word, nick_name, gender, age, tel, email, create_time, update_time, avatar_url, update_by, create_by)
+        values (#{userName}, #{passWord}, #{nickName}, #{sex}, #{age}, #{tel}, #{email}, #{createTime}, #{updateTime}, #{avatar}, #{updateBy}, #{createBy})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
@@ -164,12 +181,6 @@
     <update id="update">
         update table_user
         <set>
-            <if test="userName != null and userName != ''">
-                user_name = #{userName},
-            </if>
-            <if test="passWord != null and passWord != ''">
-                pass_word = #{passWord},
-            </if>
             <if test="nickName != null and nickName != ''">
                 nick_name = #{nickName},
             </if>
@@ -185,9 +196,6 @@
             <if test="email != null and email != ''">
                 email = #{email},
             </if>
-            <if test="status != null">
-                status = #{status},
-            </if>
             <if test="createTime != null">
                 create_time = #{createTime},
             </if>
@@ -196,6 +204,12 @@
             </if>
             <if test="avatar != null and avatar != ''">
                 avatar_url = #{avatar},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy}
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy}
             </if>
         </set>
         where id = #{id}
