@@ -75,4 +75,12 @@ public interface ArticleService {
      * @return 统一返回结果
      */
     ResponseResult<?> getArticle(Integer id);
+
+    /**
+     * 文章访问量递增
+     *
+     * @param id 文章id
+     * @return 统一返回结果
+     */
+    ResponseResult<?> viewCountIncrement(Integer id);
 }

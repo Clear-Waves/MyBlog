@@ -12,8 +12,10 @@ import cdu.cyj.domain.vo.HotArticleVo;
 import cdu.cyj.domain.vo.PageVo;
 import cdu.cyj.service.ArticleService;
 import cdu.cyj.utils.BeanCopyUtils;
+import cdu.cyj.utils.RedisCache;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -35,6 +37,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private CategoryDao categoryDao;
+
+    @Autowired
+    private RedisCache redisCache;
 
     /**
      * 查询所有数据列表
@@ -149,10 +154,23 @@ public class ArticleServiceImpl implements ArticleService {
         Category category = categoryDao.queryById(categoryDao.queryIdByArticleId(id));
         article.setCategoryName(category.getName());
 
+        // 浏览次数使用redis中的最新数据
+        article.setViewCount(redisCache.getCacheMapValue(SystemConstants.ARTICLE_VIEWCOUNT_KEY, id.toString()));
+
         // 封装Vo
         ArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, ArticleDetailVo.class);
         articleDetailVo.setCategoryId(category.getId());
 
         return ResponseResult.okResult(articleDetailVo);
+    }
+
+    @Override
+    public ResponseResult<?> viewCountIncrement(Integer id) {
+
+        // 更新redis中的viewCount
+        Integer current = redisCache.getCacheMapValue(SystemConstants.ARTICLE_VIEWCOUNT_KEY, id.toString());
+        redisCache.setCacheMapValue(SystemConstants.ARTICLE_VIEWCOUNT_KEY, id.toString(), current + 1);
+        // 返回结果
+        return ResponseResult.okResult();
     }
 }

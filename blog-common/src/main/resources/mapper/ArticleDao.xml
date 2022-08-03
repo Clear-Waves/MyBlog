@@ -169,17 +169,17 @@
             (#{entity.title}, #{entity.content}, #{entity.viewCount}, #{entity.likeCount}, #{entity.commentCount}, #{entity.status}, #{entity.userId}, #{entity.createTime}, #{entity.updateTime}, #{entity.summary}, #{entity.thumbnail})
         </foreach>
         on duplicate key update
-        title = values(title),
-        content = values(content),
-        view_count = values(view_count),
-        like_count = values(like_count),
-        comment_count = values(comment_count),
-        status = values(status),
-        user_id = values(user_id),
-        create_time = values(create_time),
-        update_time = values(update_time),
-        summary = values(summary),
-        thumbnail = values(thumbnail)
+--         title = values(title),
+--         content = values(content),
+        view_count = values(view_count)
+--         like_count = values(like_count),
+--         comment_count = values(comment_count),
+--         status = values(status),
+--         user_id = values(user_id),
+--         create_time = values(create_time),
+--         update_time = values(update_time),
+--         summary = values(summary),
+--         thumbnail = values(thumbnail)
     </insert>
 
     <!--通过主键修改数据-->
@@ -222,6 +222,15 @@
         </set>
         where id = #{id}
     </update>
+    <insert id="updateViewCountBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into table_article(id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.id}, #{entity.title}, #{entity.content}, #{entity.viewCount}, #{entity.likeCount}, #{entity.commentCount}, #{entity.status}, #{entity.userId}, #{entity.createTime}, #{entity.updateTime}, #{entity.summary}, #{entity.thumbnail})
+        </foreach>
+        on duplicate key update
+        view_count = values(view_count)
+    </insert>
 
     <!--通过主键删除-->
     <delete id="deleteById">

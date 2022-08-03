@@ -47,7 +47,7 @@ public class LogAspect {
     }
 
     /**
-     * 环绕前增强
+     * 环绕后增强
      *
      * @param ret 方法返回值
      */
@@ -57,7 +57,7 @@ public class LogAspect {
     }
 
     /**
-     * 环绕后增强
+     * 环绕前增强
      *
      */
     private void handleBefore(ProceedingJoinPoint joinPoint) {
@@ -66,7 +66,6 @@ public class LogAspect {
         HttpServletRequest request = null;
         if (requestAttributes != null) {
             request = requestAttributes.getRequest();
-
 
             log.info("=======Start=======");
             // 打印请求 URL

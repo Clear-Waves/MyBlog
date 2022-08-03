@@ -23,4 +23,8 @@ public class SystemConstants {
     // 友链评论类型代码
     public static final Integer LINK_COMMENT = 1;
 
+
+    // redis 文章访问量KEY
+    public static final String ARTICLE_VIEWCOUNT_KEY = "article:viewCount";
+
 }

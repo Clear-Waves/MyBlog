@@ -16,6 +16,8 @@ mybatis:
   mapper-locations:
     - classpath*:mapper/*.xml
   type-aliases-package: cdu.cyj.entity
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 pagehelper:
   reasonable: true
 oss:
