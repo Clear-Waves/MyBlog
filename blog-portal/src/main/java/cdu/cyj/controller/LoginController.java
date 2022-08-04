@@ -1,4 +1,4 @@
-package cdu.cyj.contorller;
+package cdu.cyj.controller;
 
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.User;
@@ -6,17 +6,21 @@ import cdu.cyj.enums.AppHttpCodeEnum;
 import cdu.cyj.exception.SystemException;
 import cdu.cyj.service.LoginService;
 import io.netty.util.internal.StringUtil;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/")
+@Api(tags = "登录")
 public class LoginController {
 
     @Autowired
     private LoginService loginService;
 
     @PostMapping("/login")
+    @ApiOperation(value = "登录")
     public ResponseResult<?> portalLogin(@RequestBody User user) {
 
         if (StringUtil.isNullOrEmpty(user.getUserName())) {
@@ -28,6 +32,7 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
+    @ApiOperation("退出登录")
     public ResponseResult<?> portalLogout() {
         return loginService.logout();
     }
