@@ -1,5 +1,5 @@
 server:
-  port: 7777
+  port: 8989
 
 spring:
   mvc:
@@ -28,4 +28,3 @@ oss:
   secretKey: wBJdWuMEeJT3rXV-F3GNTJiFPzmOyX5JbeOWOKtB
   bucket: myblogoss
   domain: http://rfxgxvtms.hn-bkt.clouddn.com/
-
