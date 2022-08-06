@@ -3,16 +3,15 @@ package cdu.cyj.service.impl;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.LoginUser;
 import cdu.cyj.domain.entity.User;
-import cdu.cyj.domain.vo.UserInfoVo;
-import cdu.cyj.domain.vo.UserLoginVo;
-import cdu.cyj.service.AdminUserService;
-import cdu.cyj.utils.BeanCopyUtils;
+import cdu.cyj.service.AdminLoginService;
 import cdu.cyj.utils.JwtUtil;
 import cdu.cyj.utils.RedisCache;
+import cdu.cyj.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -21,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
-public class AdminUserServiceImpl implements AdminUserService {
+public class AdminLoginServiceImpl implements AdminLoginService {
 
     @Resource
     private AuthenticationManager manager;
@@ -53,4 +52,14 @@ public class AdminUserServiceImpl implements AdminUserService {
 
         return ResponseResult.okResult(map);
     }
+
+    @Override
+    public ResponseResult<?> logout() {
+        LoginUser loginUser = (LoginUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        Integer userId = loginUser.getUser().getId();
+        redisCache.deleteObject("adminlogin:" + userId);
+        return ResponseResult.okResult();
+    }
+
 }

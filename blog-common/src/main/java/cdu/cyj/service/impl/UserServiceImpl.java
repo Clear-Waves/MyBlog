@@ -3,6 +3,7 @@ package cdu.cyj.service.impl;
 import cdu.cyj.dao.UserDao;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.User;
+import cdu.cyj.domain.vo.AdminUserInfoVo;
 import cdu.cyj.domain.vo.UserInfoVo;
 import cdu.cyj.enums.AppHttpCodeEnum;
 import cdu.cyj.exception.SystemException;
@@ -16,6 +17,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -36,6 +41,24 @@ public class UserServiceImpl implements UserService {
         // 封装
         UserInfoVo userInfoVo = BeanCopyUtils.copyBean(user, UserInfoVo.class);
         return ResponseResult.okResult(userInfoVo);
+    }
+
+    @Override
+    public ResponseResult<?> adminUserInfo() {
+
+        // 获取、查询
+        Integer userId = SecurityUtils.getUserId();
+        User user = userDao.queryById(userId);
+
+        // 封装
+        AdminUserInfoVo adminUserInfoVo = BeanCopyUtils.copyBean(user, AdminUserInfoVo.class);
+        Map<String, Object> map = new HashMap<>();
+        List<String> roles = new ArrayList<>();
+        roles.add("admin");
+        map.put("user", adminUserInfoVo);
+        map.put("roles", roles);
+        map.put("permissions", null);
+        return ResponseResult.okResult(map);
     }
 
     @Override
