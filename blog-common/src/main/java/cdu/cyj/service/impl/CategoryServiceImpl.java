@@ -49,4 +49,12 @@ public class CategoryServiceImpl implements CategoryService {
 
         return ResponseResult.okResult(categoryVos);
     }
+
+    @Override
+    public ResponseResult<?> getAllNormalCategoryList() {
+
+        List<Category> categoryList = categoryDao.queryAllByStatus(SystemConstants.CATEGORY_NORMAL_STATUS);
+        List<CategoryVo> categoryVoList = BeanCopyUtils.copyBeanList(categoryList, CategoryVo.class);
+        return ResponseResult.okResult(categoryVoList);
+    }
 }

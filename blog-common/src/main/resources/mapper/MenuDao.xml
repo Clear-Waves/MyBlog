@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cdu.cyj.dao.MenuDao">
+
+    <resultMap id="BaseResultMap" type="cdu.cyj.domain.entity.Menu">
+        <!--@Table table_menu-->
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="menu_name" jdbcType="VARCHAR"/>
+        <result property="path" column="path" jdbcType="VARCHAR"/>
+        <result property="component" column="component" jdbcType="VARCHAR"/>
+        <result property="visible" column="visible" jdbcType="INTEGER"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="perms" column="perms" jdbcType="VARCHAR"/>
+        <result property="icon" column="icon" jdbcType="VARCHAR"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="title" column="remark" jdbcType="VARCHAR"/>
+        <result property="parent" column="parent" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="BaseResultMap">
+        select
+          id, menu_name, path, component, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark, parent
+        from table_menu
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="BaseResultMap">
+        select
+          id, menu_name, path, component, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark, parent
+        from table_menu
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="menuName != null and menuName != ''">
+                and menu_name = #{menuName}
+            </if>
+            <if test="path != null and path != ''">
+                and path = #{path}
+            </if>
+            <if test="component != null and component != ''">
+                and component = #{component}
+            </if>
+            <if test="visible != null">
+                and visible = #{visible}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="perms != null and perms != ''">
+                and perms = #{perms}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="parent != null">
+                and parent = #{parent}
+            </if>
+        </where>
+        limit #{pageable.offset}, #{pageable.pageSize}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="BaseResultMap">
+        select
+          id, menu_name, path, component, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark, parent
+        from myBlog.table_menu
+    </select>
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from table_menu
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="menuName != null and menuName != ''">
+                and menu_name = #{menuName}
+            </if>
+            <if test="path != null and path != ''">
+                and path = #{path}
+            </if>
+            <if test="component != null and component != ''">
+                and component = #{component}
+            </if>
+            <if test="visible != null">
+                and visible = #{visible}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="perms != null and perms != ''">
+                and perms = #{perms}
+            </if>
+            <if test="icon != null and icon != ''">
+                and icon = #{icon}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            <if test="parent != null">
+                and parent = #{parent}
+            </if>
+        </where>
+    </select>
+    <select id="queryAllByStatusAndVisibleAndParent" resultMap="BaseResultMap">
+        SELECT * FROM table_menu
+        WHERE `status` = #{status}
+        AND visible = #{visible}
+        AND parent = #{parent}
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into table_menu(menu_name, path, component, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark, parent)
+        values (#{menuName}, #{path}, #{component}, #{visible}, #{status}, #{perms}, #{icon}, #{createBy}, #{createTime}, #{updateBy}, #{updateTime}, #{remark}, #{parent})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into table_menu(menu_name, path, component, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark, parent)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.menuName}, #{entity.path}, #{entity.component}, #{entity.visible}, #{entity.status}, #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark}, #{entity.parent})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into table_menu(menu_name, path, component, visible, status, perms, icon, create_by, create_time, update_by, update_time, remark, parent)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.menuName}, #{entity.path}, #{entity.component}, #{entity.visible}, #{entity.status}, #{entity.perms}, #{entity.icon}, #{entity.createBy}, #{entity.createTime}, #{entity.updateBy}, #{entity.updateTime}, #{entity.remark}, #{entity.parent})
+        </foreach>
+        on duplicate key update
+        menu_name = values(menu_name),
+        path = values(path),
+        component = values(component),
+        visible = values(visible),
+        status = values(status),
+        perms = values(perms),
+        icon = values(icon),
+        create_by = values(create_by),
+        create_time = values(create_time),
+        update_by = values(update_by),
+        update_time = values(update_time),
+        remark = values(remark),
+        parent = values(parent)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update table_menu
+        <set>
+            <if test="menuName != null and menuName != ''">
+                menu_name = #{menuName},
+            </if>
+            <if test="path != null and path != ''">
+                path = #{path},
+            </if>
+            <if test="component != null and component != ''">
+                component = #{component},
+            </if>
+            <if test="visible != null">
+                visible = #{visible},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="perms != null and perms != ''">
+                perms = #{perms},
+            </if>
+            <if test="icon != null and icon != ''">
+                icon = #{icon},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="remark != null and remark != ''">
+                remark = #{remark},
+            </if>
+            <if test="parent != null">
+                parent = #{parent},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from table_menu where id = #{id}
+    </delete>
+
+</mapper>
+

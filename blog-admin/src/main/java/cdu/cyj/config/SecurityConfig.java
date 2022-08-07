@@ -52,8 +52,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 // 允许login路径匿名访问
                 .antMatchers("/login").anonymous()
                 .antMatchers("/logout").authenticated()
-                .antMatchers(HttpMethod.POST, "/comment").authenticated()
-                .antMatchers("/user/userInfo").authenticated()
                 // 允许其他所有路径
                 .anyRequest().permitAll();
 

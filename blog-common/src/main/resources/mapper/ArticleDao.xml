@@ -16,12 +16,16 @@
         <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
         <result property="summary" column="summary" jdbcType="VARCHAR"/>
         <result property="thumbnail" column="thumbnail" jdbcType="VARCHAR"/>
+        <result property="isTop" column="isTop" jdbcType="INTEGER"/>
+        <result property="createBy" column="create_by" jdbcType="INTEGER"/>
+        <result property="updateBy" column="update_by" jdbcType="INTEGER"/>
+        <result property="isComment" column="isComment" jdbcType="INTEGER"/>
     </resultMap>
 
     <!--查询单个-->
     <select id="queryById" resultMap="BaseResultMap">
         select
-          id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail
+          *
         from table_article
         where id = #{id}
     </select>
@@ -74,8 +78,9 @@
     <!--通过实体作为筛选条件查询-->
     <select id="queryAll" resultMap="BaseResultMap">
         select
-          id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail
+          *
         from myBlog.table_article
+        where status != -1
     </select>
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
@@ -123,13 +128,13 @@
 
     <!--  查询热门文章列表  -->
     <select id="queryHotArticleList" resultMap="BaseResultMap">
-        select * from table_article where status = 1
+        select * from table_article where status = 0
         order by view_count
         desc limit 0, #{count}
     </select>
     <select id="queryAllByStatus" resultMap="BaseResultMap">
         select * from  table_article where status = #{status}
-        order by create_time desc
+        order by isTop
     </select>
     <select id="queryIdsByCategoryId" resultType="java.lang.Integer">
         SELECT article_id
@@ -145,13 +150,13 @@
         </foreach>
         AND
         status = #{status}
-        order by create_time desc
+        order by isTop
     </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into table_article(title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail)
-        values (#{title}, #{content}, #{viewCount}, #{likeCount}, #{commentCount}, #{status}, #{userId}, #{createTime}, #{updateTime}, #{summary}, ${thumbnail})
+        insert into table_article(title, content, status, user_id, create_time, update_time, summary, thumbnail, isTop, create_by, update_by, isComment)
+        values (#{title}, #{content}, #{status}, #{userId}, #{createTime}, #{updateTime}, #{summary}, #{thumbnail}, #{isTop}, #{createBy}, #{updateBy}, #{isComment})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
@@ -230,6 +235,11 @@
         </foreach>
         on duplicate key update
         view_count = values(view_count)
+    </insert>
+    <insert id="insertArticleCategory">
+        INSERT INTO table_category_article_ref
+        (article_id, category_id)
+        VALUES(#{articleId}, #{categoryId})
     </insert>
 
     <!--通过主键删除-->

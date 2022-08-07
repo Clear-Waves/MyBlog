@@ -48,6 +48,13 @@ public interface ArticleDao {
     int insert(Article article);
 
     /**
+     * 添加分类数据
+     *
+     * @return 影响行数
+     */
+    int insertArticleCategory(@Param("articleId") Integer articleId, @Param("categoryId") Integer categoryId);
+
+    /**
      * 批量新增数据（MyBatis原生foreach方法）
      *
      * @param entities List<Article> 实例对象列表

@@ -18,6 +18,7 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class AdminLoginServiceImpl implements AdminLoginService {
@@ -44,7 +45,7 @@ public class AdminLoginServiceImpl implements AdminLoginService {
         String userId = loginUser.getUser().getId().toString();
         String jwt = JwtUtil.createJWT(userId);
         // 存入redis
-        redisCache.setCacheObject("adminlogin:" + userId, loginUser);
+        redisCache.setCacheObject("adminlogin:" + userId, loginUser, 2, TimeUnit.HOURS);
 
         // 封装统一返回类型
         Map<String, String> map = new HashMap<>();

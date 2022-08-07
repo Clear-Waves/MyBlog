@@ -1,6 +1,7 @@
 package cdu.cyj.service.impl;
 
 import cdu.cyj.constants.SystemConstants;
+import cdu.cyj.dao.ArticleDao;
 import cdu.cyj.dao.CommentDao;
 import cdu.cyj.dao.UserDao;
 import cdu.cyj.domain.ResponseResult;
@@ -29,6 +30,9 @@ public class CommentServiceImpl implements CommentService {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private ArticleDao articleDao;
+
     @Override
     public ResponseResult<?> commentList(Integer articleId, Integer pageNum, Integer pageSize) {
 
@@ -49,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
                 .collect(Collectors.toList());
 
         // 封装PageVo
-        PageVo pageVo = new PageVo(commentVoList, pageInfo.getPages());
+        PageVo pageVo = new PageVo(commentVoList, pageInfo.getTotal());
 
         return ResponseResult.okResult(pageVo);
     }
@@ -59,6 +63,10 @@ public class CommentServiceImpl implements CommentService {
 
         if (StringUtil.isNullOrEmpty(comment.getContent())) {
             return ResponseResult.errorResult(AppHttpCodeEnum.CONTENT_NOT_NULL);
+        }
+
+        if (articleDao.queryById(comment.getArticleId()).getIsComment() == 1) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.ARTICLE_NO_COMMENT);
         }
 
         AutoFilledUtils.autoFillOnInsert(comment);
@@ -91,7 +99,7 @@ public class CommentServiceImpl implements CommentService {
                 .collect(Collectors.toList());
 
         // 封装
-        PageVo pageVo = new PageVo(commentVoList, pageInfo.getPages());
+        PageVo pageVo = new PageVo(commentVoList, pageInfo.getTotal());
         return ResponseResult.okResult(pageVo);
     }
 

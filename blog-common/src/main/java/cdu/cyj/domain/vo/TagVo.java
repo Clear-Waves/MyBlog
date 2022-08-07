@@ -4,15 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class PageVo {
+@NoArgsConstructor
+public class TagVo {
 
-    private List<?> rows;
+    private Integer id;
 
-    private Long total;
+    private String name;
 
 }

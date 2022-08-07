@@ -1,22 +1,22 @@
 package cdu.cyj.controller;
 
 import cdu.cyj.domain.ResponseResult;
-import cdu.cyj.service.TagService;
+import cdu.cyj.service.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/content/tag")
-public class    TagController {
+@RequestMapping("/content/category")
+public class CategoryController {
 
     @Autowired
-    private TagService tagService;
+    private CategoryService categoryService;
 
-    @GetMapping("listAllTag")
-    public ResponseResult<?> tagList() {
-        return tagService.tagList();
+    @GetMapping("/listAllCategory")
+    public ResponseResult<?> listAllCategory() {
+        return categoryService.getAllNormalCategoryList();
     }
 
 }

@@ -15,7 +15,8 @@ public enum AppHttpCodeEnum {
     ADD_ERROR(506, "添加记录失败"),
     CONTENT_NOT_NULL(507, "评论不能为空"),
     FILE_TYPE_ERROR(508, "文件类型错误"),
-    PARAMETER_ERROR(509, "参数错误");
+    PARAMETER_ERROR(509, "参数错误"),
+    ARTICLE_NO_COMMENT(510,"文章不允许评论");
 
 
     int code;

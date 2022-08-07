@@ -4,13 +4,16 @@ import cdu.cyj.constants.SystemConstants;
 import cdu.cyj.dao.ArticleDao;
 import cdu.cyj.dao.CategoryDao;
 import cdu.cyj.domain.ResponseResult;
+import cdu.cyj.domain.dto.ArticleAddDto;
 import cdu.cyj.domain.entity.Article;
 import cdu.cyj.domain.entity.Category;
 import cdu.cyj.domain.vo.ArticleDetailVo;
 import cdu.cyj.domain.vo.ArticleListVo;
 import cdu.cyj.domain.vo.HotArticleVo;
 import cdu.cyj.domain.vo.PageVo;
+import cdu.cyj.enums.AppHttpCodeEnum;
 import cdu.cyj.service.ArticleService;
+import cdu.cyj.utils.AutoFilledUtils;
 import cdu.cyj.utils.BeanCopyUtils;
 import cdu.cyj.utils.RedisCache;
 import com.github.pagehelper.PageHelper;
@@ -20,8 +23,6 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
-import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -65,13 +66,20 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 新增数据
      *
-     * @param article 实例对象
+     * @param articleDto 实例对象
      * @return 实例对象
      */
     @Override
-    public Article insert(Article article) {
-        this.articleDao.insert(article);
-        return article;
+    public ResponseResult<?> insert(ArticleAddDto articleDto) {
+        Article article = BeanCopyUtils.copyBean(articleDto, Article.class);
+        AutoFilledUtils.autoFillOnInsert(article);
+        int countArticle = this.articleDao.insert(article);
+        int countCategory = this.articleDao.insertArticleCategory(article.getId(), articleDto.getCategoryId());
+        if (countArticle == 1 && countCategory == 1) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
     }
 
     /**
@@ -141,7 +149,7 @@ public class ArticleServiceImpl implements ArticleService {
 
         PageVo pageVo = new PageVo();
         pageVo.setRows(articleListVos);
-        pageVo.setTotal(pageInfo.getPages());
+        pageVo.setTotal(pageInfo.getTotal());
 
         return ResponseResult.okResult(pageVo);
 
@@ -172,5 +180,16 @@ public class ArticleServiceImpl implements ArticleService {
         redisCache.setCacheMapValue(SystemConstants.ARTICLE_VIEWCOUNT_KEY, id.toString(), current + 1);
         // 返回结果
         return ResponseResult.okResult();
+    }
+
+    @Override
+    public ResponseResult<?> articleList(Integer pageNum, Integer pageSize) {
+
+        // dao查询
+        List<Article> articleList = articleDao.queryAllByStatus(SystemConstants.ARTICLE_NORMAL_STATUS);
+        articleList.addAll(articleDao.queryAllByStatus(SystemConstants.ARTICLE_DRAFT_STATUS));
+
+        // 封装返回
+        return null;
     }
 }

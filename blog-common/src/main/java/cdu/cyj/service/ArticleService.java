@@ -1,6 +1,7 @@
 package cdu.cyj.service;
 
 import cdu.cyj.domain.ResponseResult;
+import cdu.cyj.domain.dto.ArticleAddDto;
 import cdu.cyj.domain.entity.Article;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public interface ArticleService {
      * @param article 实例对象
      * @return 实例对象
      */
-    Article insert(Article article);
+    ResponseResult<?> insert(ArticleAddDto article);
 
     /**
      * 修改数据
@@ -83,4 +84,13 @@ public interface ArticleService {
      * @return 统一返回结果
      */
     ResponseResult<?> viewCountIncrement(Integer id);
+
+    /**
+     * 获取所有文章列表
+     *
+     * @param pageNum 页数
+     * @param pageSize 页大小
+     * @return 统一返回结果
+     */
+    ResponseResult<?> articleList(Integer pageNum, Integer pageSize);
 }

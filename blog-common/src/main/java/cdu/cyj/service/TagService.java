@@ -9,5 +9,5 @@ public interface TagService {
      *
      * @return 统一返回结果
      */
-    ResponseResult<?> tageList();
+    ResponseResult<?> tagList();
 }

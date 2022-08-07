@@ -25,4 +25,6 @@ public class ArticleDetailVo {
 
     private Integer categoryId;
 
+    private Integer isComment;
+
 }

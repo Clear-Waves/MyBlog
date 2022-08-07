@@ -47,5 +47,13 @@ public class Article implements Serializable {
     private String thumbnail;
 
     private String categoryName;
+
+    private Integer isTop;
+
+    private Integer createBy;
+
+    private Integer updateBy;
+
+    private Integer isComment;
 }
 
