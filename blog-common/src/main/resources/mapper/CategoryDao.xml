@@ -20,7 +20,10 @@
         select
           id, name, pid, description, status, create_by, create_time, update_by, update_time
         from table_category
-        where id = #{id}
+        <where>
+            and id = #{id}
+            and status != -1
+        </where>
     </select>
 
     <!--查询指定行数据-->

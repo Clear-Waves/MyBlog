@@ -27,7 +27,10 @@
         select
           *
         from table_article
-        where id = #{id}
+        where
+              id = #{id}
+        and   status != -1;
+
     </select>
 
     <!--查询指定行数据-->
@@ -152,6 +155,28 @@
         status = #{status}
         order by isTop
     </select>
+    <select id="queryAllByTitleAndSummary" resultMap="BaseResultMap">
+        SELECT * FROM table_article
+        <where>
+            <if test="title != null and title != ''">
+                and title like concat('%',#{title}, '%')
+            </if>
+            <if test="summary != null and summary != ''">
+                and summary like concat('%',#{summary}, '%')
+            </if>
+            and status != -1
+        </where>
+    </select>
+    <select id="queryByIdAndStatus" resultMap="BaseResultMap">
+        select
+            *
+        from myBlog.table_article
+        <where>
+            and id = #{id}
+            and status = #{status}
+            and status != -1
+        </where>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
@@ -227,6 +252,26 @@
         </set>
         where id = #{id}
     </update>
+    <update id="updateArticleTag">
+        UPDATE table_tag_article_ref
+        SET
+            tag_id = #{tagId}
+        WHERE
+            article_id =#{articleId}
+    </update>
+    <update id="updateArticleCategory">
+
+    </update>
+    <insert id="updateArticleTagBatch">
+        insert into table_category_article_ref
+        (id, article_id, tag_id)
+        values
+        <foreach collection="tagIds" separator="," item="tagId">
+            (#{entity.id}, #{entity.article_id}, #{entity.tag_id})
+        </foreach>
+        on duplicate key update
+
+    </insert>
     <insert id="updateViewCountBatch" keyProperty="id" useGeneratedKeys="true">
         insert into table_article(id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail)
         values
@@ -241,6 +286,18 @@
         (article_id, category_id)
         VALUES(#{articleId}, #{categoryId})
     </insert>
+    <insert id="insertArticleTag">
+        INSERT INTO table_tag_article_ref
+            (article_id, tag_id)
+        VALUES
+           <foreach collection="tagIds" item="tagId"  separator=",">
+               (#{articleId}, #{tagId})
+           </foreach>
+        on duplicate key update
+        article_id = values(article_id)
+        tag_id = values(tag_id)
+    </insert>
+
 
     <!--通过主键删除-->
     <delete id="deleteById">

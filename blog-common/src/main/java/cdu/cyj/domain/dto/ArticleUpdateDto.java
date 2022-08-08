@@ -9,7 +9,9 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleAddDto {
+public class ArticleUpdateDto {
+
+    private Integer id;
 
     private String title;
 

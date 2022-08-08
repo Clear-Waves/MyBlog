@@ -88,5 +88,15 @@ public interface TagDao {
      * @return tag对象列表
      */
     List<Tag> queryAllByStatus(Integer status);
+
+    /**
+     * 通过文章id插叙tagID
+     *
+     * @param articleId 文章id
+     * @return tagId列表
+     */
+    List<Integer> queryIdsByArticleId(Integer articleId);
+
+    List<Tag> queryAllByIds(@Param("ids") List<Integer> ids);
 }
 

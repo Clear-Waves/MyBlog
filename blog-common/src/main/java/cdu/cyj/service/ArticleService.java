@@ -2,6 +2,7 @@ package cdu.cyj.service;
 
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.ArticleAddDto;
+import cdu.cyj.domain.dto.ArticleUpdateDto;
 import cdu.cyj.domain.entity.Article;
 
 import java.util.List;
@@ -39,10 +40,10 @@ public interface ArticleService {
     /**
      * 修改数据
      *
-     * @param article 实例对象
+     * @param articleDto 实例dto对象
      * @return 实例对象
      */
-    Article update(Article article);
+    ResponseResult<?> update(ArticleUpdateDto articleDto);
 
     /**
      * 通过主键删除数据
@@ -85,12 +86,27 @@ public interface ArticleService {
      */
     ResponseResult<?> viewCountIncrement(Integer id);
 
+
+
     /**
+     * <<<< 后台 >>>>
      * 获取所有文章列表
      *
+     *
+     * @param title 文章标题
+     * @param summary 文章摘要
      * @param pageNum 页数
      * @param pageSize 页大小
      * @return 统一返回结果
      */
-    ResponseResult<?> articleList(Integer pageNum, Integer pageSize);
+    ResponseResult<?> articleList(String title, String summary, Integer pageNum, Integer pageSize);
+
+    /**
+     * <<<< 后台 >>>>
+     * 获取文章详情
+     *
+     * @param id 文章id
+     * @return 统一返回结果
+     */
+    ResponseResult<?> getArticleAdmin(Integer id);
 }

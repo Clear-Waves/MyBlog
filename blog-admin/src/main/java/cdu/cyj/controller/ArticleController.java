@@ -2,6 +2,7 @@ package cdu.cyj.controller;
 
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.ArticleAddDto;
+import cdu.cyj.domain.dto.ArticleUpdateDto;
 import cdu.cyj.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,19 @@ public class ArticleController {
     }
 
     @GetMapping("/list")
-    public ResponseResult<?> listArticle(Integer pageNum, Integer pageSize) {
-        return articleService.articleList(pageNum, pageSize);
+    public ResponseResult<?> listArticle(String title, String summary, Integer pageNum, Integer pageSize) {
+        return articleService.articleList(title, summary, pageNum, pageSize);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseResult<?> getArticle(@PathVariable Integer id) {
+        return articleService.getArticleAdmin(id);
+    }
+
+    @PutMapping
+    public ResponseResult<?> updateArticle(ArticleUpdateDto articleDto) {
+
+        return articleService.update(articleDto);
+
     }
 }

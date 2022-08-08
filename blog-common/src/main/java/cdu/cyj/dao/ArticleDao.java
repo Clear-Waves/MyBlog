@@ -55,6 +55,13 @@ public interface ArticleDao {
     int insertArticleCategory(@Param("articleId") Integer articleId, @Param("categoryId") Integer categoryId);
 
     /**
+     * 添加标签数据
+     *
+     * @return 影响行数
+     */
+    int insertArticleTag(@Param("articleId") Integer articleId, @Param("tagIds") List<Integer> tagIds);
+
+    /**
      * 批量新增数据（MyBatis原生foreach方法）
      *
      * @param entities List<Article> 实例对象列表
@@ -126,5 +133,49 @@ public interface ArticleDao {
      * @return 文章列表
      */
     List<Article> queryAllByIdsAndStatus(@Param("ids") List<Integer> ids, @Param("status") Integer status);
+
+    /**
+     * 通过title, summary 进行模糊查询
+     *
+     * @param title 标题
+     * @param summary 摘要
+     * @return 文章列表
+     */
+    List<Article> queryAllByTitleAndSummary(@Param("title") String title, @Param("summary") String summary);
+
+    /**
+     * 通过ID查询单条数据
+     *
+     * @param id 主键
+     * @return 实例对象
+     */
+    Article queryByIdAndStatus(@Param("id") Integer id, @Param("status") Integer status);
+
+    /**
+     * 更新文章分类中间表
+     *
+     * @param articleId 文章id
+     * @param categoryId 分类id
+     * @return 更新个数
+     */
+    int updateArticleCategory(@Param("articleId") Integer articleId, @Param("categoryId") Integer categoryId);
+
+    /**
+     * 更新文章标签中间表
+     *
+     * @param articleId 文章id
+     * @param tagId 标签id
+     * @return 跟新个数
+     */
+    int updateArticleTag(@Param("articleId") Integer articleId, @Param("tagId") Integer tagId);
+
+    /**
+     * 批量更新
+     *
+     * @param articleId
+     * @param tagIds
+     * @return
+     */
+    int updateArticleTagBatch(@Param("articleId") Integer articleId, @Param("tagIds") List<Integer> tagIds);
 }
 

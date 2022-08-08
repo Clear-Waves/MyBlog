@@ -3,14 +3,14 @@ package cdu.cyj.service.impl;
 import cdu.cyj.constants.SystemConstants;
 import cdu.cyj.dao.ArticleDao;
 import cdu.cyj.dao.CategoryDao;
+import cdu.cyj.dao.TagDao;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.ArticleAddDto;
+import cdu.cyj.domain.dto.ArticleUpdateDto;
 import cdu.cyj.domain.entity.Article;
 import cdu.cyj.domain.entity.Category;
-import cdu.cyj.domain.vo.ArticleDetailVo;
-import cdu.cyj.domain.vo.ArticleListVo;
-import cdu.cyj.domain.vo.HotArticleVo;
-import cdu.cyj.domain.vo.PageVo;
+import cdu.cyj.domain.entity.Tag;
+import cdu.cyj.domain.vo.*;
 import cdu.cyj.enums.AppHttpCodeEnum;
 import cdu.cyj.service.ArticleService;
 import cdu.cyj.utils.AutoFilledUtils;
@@ -38,6 +38,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Resource
     private CategoryDao categoryDao;
+
+    @Autowired
+    private TagDao tagDao;
 
     @Autowired
     private RedisCache redisCache;
@@ -71,11 +74,18 @@ public class ArticleServiceImpl implements ArticleService {
      */
     @Override
     public ResponseResult<?> insert(ArticleAddDto articleDto) {
+        // 获取dto参数
         Article article = BeanCopyUtils.copyBean(articleDto, Article.class);
         AutoFilledUtils.autoFillOnInsert(article);
+        // 校验参数是否合法
+        if (!checkParameters(articleDto.getCategoryId(), articleDto.getTags())) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAMETER_ERROR);
+        }
+        // 插入 article, category—article, tag—article 三张表
         int countArticle = this.articleDao.insert(article);
         int countCategory = this.articleDao.insertArticleCategory(article.getId(), articleDto.getCategoryId());
-        if (countArticle == 1 && countCategory == 1) {
+        int countTag = this.articleDao.insertArticleTag(article.getId(), articleDto.getTags());
+        if (countArticle == 1 && countCategory == 1 && countTag >= 1) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
@@ -85,13 +95,27 @@ public class ArticleServiceImpl implements ArticleService {
     /**
      * 修改数据
      *
-     * @param article 实例对象
+     *
+     * @param articleDto 实例对象dto
      * @return 实例对象
      */
     @Override
-    public Article update(Article article) {
-        this.articleDao.update(article);
-        return this.queryById(article.getId());
+    public ResponseResult<?> update(ArticleUpdateDto articleDto) {
+
+        // 获取dto参数
+        Article article = BeanCopyUtils.copyBean(articleDto, Article.class);
+        AutoFilledUtils.autoFillOnUpdate(article);
+        if (!checkParameters(articleDto.getCategoryId(), articleDto.getTags())) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAMETER_ERROR);
+        }
+
+        // 调用dao更新article表
+        int countArticle = this.articleDao.update(article);
+        // 调用dao更新article-tag中间表
+        this.articleDao.updateArticleTagBatch(article.getId(), articleDto.getTags());
+        // 调用dao更新article-category中间表
+        // 返回
+        return null;
     }
 
     /**
@@ -158,7 +182,7 @@ public class ArticleServiceImpl implements ArticleService {
     @Override
     public ResponseResult<?> getArticle(Integer id) {
         // 查询文章详情以及分类
-        Article article = articleDao.queryById(id);
+        Article article = articleDao.queryByIdAndStatus(id, SystemConstants.ARTICLE_NORMAL_STATUS);
         Category category = categoryDao.queryById(categoryDao.queryIdByArticleId(id));
         article.setCategoryName(category.getName());
 
@@ -183,13 +207,72 @@ public class ArticleServiceImpl implements ArticleService {
     }
 
     @Override
-    public ResponseResult<?> articleList(Integer pageNum, Integer pageSize) {
+    public ResponseResult<?> articleList(String title, String summary, Integer pageNum, Integer pageSize) {
 
+        // 分页
+        PageHelper.startPage(pageNum, pageSize);
         // dao查询
-        List<Article> articleList = articleDao.queryAllByStatus(SystemConstants.ARTICLE_NORMAL_STATUS);
-        articleList.addAll(articleDao.queryAllByStatus(SystemConstants.ARTICLE_DRAFT_STATUS));
-
+        List<Article> articleList = articleDao.queryAllByTitleAndSummary(title, summary);
         // 封装返回
-        return null;
+        PageInfo<Article> pageInfo = new PageInfo<>(articleList);
+        List<ArticleListVo> articleListVoList = BeanCopyUtils.copyBeanList(articleList, ArticleListVo.class);
+
+        PageVo pageVo = new PageVo(articleListVoList, pageInfo.getTotal());
+        return ResponseResult.okResult(pageVo);
+    }
+
+    @Override
+    public ResponseResult<?> getArticleAdmin(Integer id) {
+        // 查询文章详情以及分类以及标签
+        Article article = articleDao.queryById(id);
+        Integer categoryId = categoryDao.queryIdByArticleId(id);
+        List<Integer> ids = tagDao.queryIdsByArticleId(article.getId());
+
+        // 封装Vo
+        AdminArticleDetailVo articleDetailVo = BeanCopyUtils.copyBean(article, AdminArticleDetailVo.class);
+        if (ids != null && ids.size() > 0) {
+            // List<Tag> tags = tagDao.queryAllByIds(ids);
+            // List<TagVo> tagVoList = BeanCopyUtils.copyBeanList(tags, TagVo.class);
+            articleDetailVo.setTags(ids);
+        }
+        articleDetailVo.setCategoryId(categoryId);
+
+        // 对接前端char类型
+        articleDetailVo.setIsTop("" + article.getIsTop());
+        articleDetailVo.setIsComment("" + article.getIsComment());
+
+        return ResponseResult.okResult(articleDetailVo);
+    }
+
+
+
+
+
+
+
+
+
+
+
+    /**
+     * 校验dto的参数是否合法
+     *
+     * @param categoryId 分类id
+     * @param tagIds 标签id集合
+     * @return 是否合法
+     */
+    private boolean checkParameters(Integer categoryId, List<Integer> tagIds) {
+        // 校验参数是否合法
+        // 校验category状态是否正常
+        Category category = categoryDao.queryById(categoryId);
+        if (category == null || category.getStatus() != 0) {
+            return false;
+        }
+        // 校验tag状态是否正常
+        List<Tag> tags = tagDao.queryAllByIds(tagIds);
+        if (tags.stream().filter(tag -> tag.getStatus() == 0).count() != tagIds.size()) {
+            return false;
+        }
+        return true;
     }
 }
