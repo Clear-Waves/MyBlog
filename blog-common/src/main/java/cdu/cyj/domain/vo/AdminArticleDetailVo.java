@@ -25,6 +25,8 @@ public class AdminArticleDetailVo {
 
     private String isTop;
 
+    private Integer status;
+
     private List<Integer> tags;
 
 }

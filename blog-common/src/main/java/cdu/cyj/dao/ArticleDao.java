@@ -104,6 +104,14 @@ public interface ArticleDao {
     int deleteById(Integer id);
 
     /**
+     * 通过主键批量删除数据
+     *
+     * @param ids 主键
+     * @return 影响行数
+     */
+    int deleteByIdBatch(@Param("ids") List<Integer> ids);
+
+    /**
      * 查询热门文章，浏览量前十
      *
      * @return 热门文章列表
@@ -170,12 +178,44 @@ public interface ArticleDao {
     int updateArticleTag(@Param("articleId") Integer articleId, @Param("tagId") Integer tagId);
 
     /**
-     * 批量更新
+     * 批量更新文章标签中间表
      *
-     * @param articleId
-     * @param tagIds
-     * @return
+     * @param articleId 文章Id
+     * @param tagIds 标签id
+     * @return 更新条数
      */
     int updateArticleTagBatch(@Param("articleId") Integer articleId, @Param("tagIds") List<Integer> tagIds);
+
+    /**
+     * 通过文章id删除article-tag中间表记录
+     *
+     * @param articleId 文章id
+     * @return 受影响条数
+     */
+    int deleteArticleTagByArticleId(Integer articleId);
+
+    /**
+     * 通过文章id批量删除article-tag中间表记录
+     *
+     * @param articleIds 文章id列表
+     * @return 受影响记录条数
+     */
+    int deleteArticleTagByArticleIdBatch(@Param("articleIds") List<Integer> articleIds);
+
+    /**
+     * 通过文章id删除article-category中间表记录
+     *
+     * @param articleId 文章id
+     * @return 受影响条数
+     */
+    int deleteArticleCategoryByArticleId(Integer articleId);
+
+    /**
+     * 通过文章id批量删除article-category中间表记录
+     *
+     * @param articleIds 文章id列表
+     * @return 受影响记录条数
+     */
+    int deleteArticleCategoryByArticleIdBatch(@Param("articleIds") List<Integer> articleIds);
 }
 

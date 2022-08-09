@@ -51,7 +51,15 @@ public interface ArticleService {
      * @param id 主键
      * @return 是否成功
      */
-    boolean deleteById(Integer id);
+    ResponseResult<?> deleteById(Integer id);
+
+    /**
+     * 通过主键列表批量删除
+     *
+     * @param ids 主键列表
+     * @return 是否成功
+     */
+    ResponseResult<?> deleteByIdBatch(List<Integer> ids);
 
     /**
      * 查询人们文章

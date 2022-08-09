@@ -7,6 +7,8 @@ import cdu.cyj.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/content/article")
 public class ArticleController {
@@ -31,9 +33,12 @@ public class ArticleController {
     }
 
     @PutMapping
-    public ResponseResult<?> updateArticle(ArticleUpdateDto articleDto) {
-
+    public ResponseResult<?> updateArticle(@RequestBody ArticleUpdateDto articleDto) {
         return articleService.update(articleDto);
+    }
 
+    @DeleteMapping("/{ids}")
+    public ResponseResult<?> deleteArticle(@PathVariable List<Integer> ids) {
+        return articleService.deleteByIdBatch(ids);
     }
 }

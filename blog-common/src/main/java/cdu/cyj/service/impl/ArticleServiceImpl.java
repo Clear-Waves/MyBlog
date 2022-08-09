@@ -85,7 +85,7 @@ public class ArticleServiceImpl implements ArticleService {
         int countArticle = this.articleDao.insert(article);
         int countCategory = this.articleDao.insertArticleCategory(article.getId(), articleDto.getCategoryId());
         int countTag = this.articleDao.insertArticleTag(article.getId(), articleDto.getTags());
-        if (countArticle == 1 && countCategory == 1 && countTag >= 1) {
+        if (countArticle == 1 && countCategory == 1 && countTag == articleDto.getTags().size()) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
@@ -111,11 +111,21 @@ public class ArticleServiceImpl implements ArticleService {
 
         // 调用dao更新article表
         int countArticle = this.articleDao.update(article);
-        // 调用dao更新article-tag中间表
-        this.articleDao.updateArticleTagBatch(article.getId(), articleDto.getTags());
+        // 调用dao更新article-tag中间表 由于多对多，使用先删除在添加
+        // int countTags = this.articleDao.updateArticleTagBatch(article.getId(), articleDto.getTags());
+        this.articleDao.deleteArticleTagByArticleId(article.getId());
+        int countTags = 0;
+        if (articleDto.getTags() != null && articleDto.getTags().size() > 0) {
+            countTags = this.articleDao.insertArticleTag(article.getId(), articleDto.getTags());
+        }
         // 调用dao更新article-category中间表
+        int countCategory = this.articleDao.updateArticleCategory(article.getId(), articleDto.getCategoryId());
         // 返回
-        return null;
+        if (countArticle == 1 && countCategory == 1 && (articleDto.getTags() == null || countTags == articleDto.getTags().size())) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
     }
 
     /**
@@ -125,8 +135,33 @@ public class ArticleServiceImpl implements ArticleService {
      * @return 是否成功
      */
     @Override
-    public boolean deleteById(Integer id) {
-        return this.articleDao.deleteById(id) > 0;
+    public ResponseResult<?> deleteById(Integer id) {
+        // 逻辑删除、
+        int countArticle = this.articleDao.deleteById(id);
+        // 删除相关中间表
+        int countArticleTag = this.articleDao.deleteArticleTagByArticleId(id);
+        int countArticleCategory = this.articleDao.deleteArticleCategoryByArticleId(id);
+
+        if (countArticle == 1 & countArticleCategory == 1) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult<?> deleteByIdBatch(List<Integer> ids) {
+        // 逻辑删除、
+        int countArticle = this.articleDao.deleteByIdBatch(ids);
+        // 删除相关中间表
+        int countArticleTag = this.articleDao.deleteArticleTagByArticleIdBatch(ids);
+        int countArticleCategory = this.articleDao.deleteArticleCategoryByArticleIdBatch(ids);
+
+        if (countArticle == ids.size() && countArticleCategory > 0) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
     }
 
     @Override
@@ -269,9 +304,11 @@ public class ArticleServiceImpl implements ArticleService {
             return false;
         }
         // 校验tag状态是否正常
-        List<Tag> tags = tagDao.queryAllByIds(tagIds);
-        if (tags.stream().filter(tag -> tag.getStatus() == 0).count() != tagIds.size()) {
-            return false;
+        if (tagIds != null && tagIds.size() != 0) {
+            List<Tag> tags = tagDao.queryAllByIds(tagIds);
+            if (tags.stream().filter(tag -> tag.getStatus() == 0).count() != tagIds.size()) {
+                return false;
+            }
         }
         return true;
     }

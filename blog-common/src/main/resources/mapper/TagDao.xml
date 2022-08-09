@@ -98,6 +98,7 @@
         SELECT tag_id FROM table_tag_article_ref
         <where>
             and article_id = #{articleId}
+            and status != -1
         </where>
     </select>
     <select id="queryAllByIds" resultMap="BaseResultMap">

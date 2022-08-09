@@ -136,11 +136,13 @@
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+        and status != -1
     </select>
     <select id="queryIdByArticleId" resultType="java.lang.Integer">
         SELECT category_id
         FROM table_category_article_ref
         WHERE article_id = #{articleId}
+        and status != -1
     </select>
 
     <!--新增所有列-->

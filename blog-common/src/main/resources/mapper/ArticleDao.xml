@@ -143,6 +143,7 @@
         SELECT article_id
         FROM table_category_article_ref
         WHERE category_id = #{categoryId}
+        and status != -1
     </select>
     <select id="queryAllByIdsAndStatus" resultMap="BaseResultMap">
         SELECT *
@@ -153,6 +154,8 @@
         </foreach>
         AND
         status = #{status}
+        and
+        status != -1
         order by isTop
     </select>
     <select id="queryAllByTitleAndSummary" resultMap="BaseResultMap">
@@ -247,7 +250,19 @@
                 summary = #{summary},
             </if>
             <if test="thumbnail != null and thumbnail != ''">
-                thumbnail = #{thumbnail}
+                thumbnail = #{thumbnail},
+            </if>
+            <if test="isTop != null">
+                isTop = #{isTop},
+            </if>
+            <if test="createBy != null">
+                create_by = #{createBy},
+            </if>
+            <if test="updateBy != null">
+                update_by = #{updateBy},
+            </if>
+            <if test="isComment != null">
+                isComment = #{isComment}
             </if>
         </set>
         where id = #{id}
@@ -260,17 +275,22 @@
             article_id =#{articleId}
     </update>
     <update id="updateArticleCategory">
-
+        update table_category_article_ref
+        set
+            category_id = #{categoryId}
+        where
+            article_id = #{articleId}
     </update>
     <insert id="updateArticleTagBatch">
-        insert into table_category_article_ref
+        insert into table_tag_article_ref
         (id, article_id, tag_id)
         values
         <foreach collection="tagIds" separator="," item="tagId">
-            (#{entity.id}, #{entity.article_id}, #{entity.tag_id})
+            (#{entity.id}, #{articleId}, #{tagId})
         </foreach>
         on duplicate key update
-
+        article_id = values(article_id),
+        tag_id = values(tag_id)
     </insert>
     <insert id="updateViewCountBatch" keyProperty="id" useGeneratedKeys="true">
         insert into table_article(id, title, content, view_count, like_count, comment_count, status, user_id, create_time, update_time, summary, thumbnail)
@@ -293,16 +313,52 @@
            <foreach collection="tagIds" item="tagId"  separator=",">
                (#{articleId}, #{tagId})
            </foreach>
-        on duplicate key update
-        article_id = values(article_id)
-        tag_id = values(tag_id)
     </insert>
 
 
     <!--通过主键删除-->
-    <delete id="deleteById">
-        delete from table_article where id = #{id}
-    </delete>
+    <update id="deleteById">
+        update table_article
+        set status = -1
+        where id = #{id}
+    </update>
+    <update id="deleteArticleTagByArticleId">
+        update table_tag_article_ref
+        set status = -1
+        where article_id = #{articleId}
+    </update>
+    <update id="deleteArticleCategoryByArticleId">
+        update table_category_article_ref
+        set status = -1
+        where article_id = #{articleId}
+    </update>
+    <update id="deleteByIdBatch">
+        update table_article
+        set status = -1
+        where id
+        in
+        <foreach collection="articleIds" item="articleId" open="(" close=")" separator=",">
+            #{ids}
+        </foreach>
+    </update>
+    <update id="deleteArticleTagByArticleIdBatch">
+        update table_tag_article_ref
+        set status = -1
+        where article_id
+        in
+        <foreach collection="articleIds" item="articleId" open="(" close=")" separator=",">
+            #{articleId}
+        </foreach>
+    </update>
+    <update id="deleteArticleCategoryByArticleIdBatch">
+        update table_category_article_ref
+        set status = -1
+        where article_id
+        in
+        <foreach collection="articleIds" item="articleId" open="(" close=")" separator=",">
+            #{articleId}
+        </foreach>
+    </update>
 
 </mapper>
 
