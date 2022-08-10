@@ -67,7 +67,22 @@
     <select id="queryAll" resultMap="BaseResultMap">
         select
           id, name, pid, description, status, create_by, create_time, update_by, update_time
-        from myBlog.table_category
+        from table_category
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="pid != null">
+                and pid = #{pid}
+            </if>
+            <if test="description != null and description != ''">
+                and description like concat('%', #{description}, '%')
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            and status != -1
+        </where>
     </select>
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
@@ -212,6 +227,14 @@
     <delete id="deleteById">
         delete from table_category where id = #{id}
     </delete>
+    <update id="deleteByIdBatch">
+        update table_category
+        set status = -1
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+    </update>
 
 </mapper>
 

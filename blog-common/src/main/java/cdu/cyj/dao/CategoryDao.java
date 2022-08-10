@@ -99,5 +99,20 @@ public interface CategoryDao {
      * @return 分类Id
      */
     Integer queryIdByArticleId(Integer articleId);
+
+    /**
+     * 查询全部分类信息
+     *
+     * @return 分类列表
+     */
+    List<Category> queryAll(Category category);
+
+    /**
+     * 批量删除分类信息
+     *
+     * @param ids id列表
+     * @return 受影响行数
+     */
+    int deleteByIdBatch(@Param("ids") List<Integer> ids);
 }
 
