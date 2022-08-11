@@ -22,6 +22,7 @@
           id, name, logo, description, address, status, create_by, create_time, update_by, update_time
         from table_link
         where id = #{id}
+        and status != -1
     </select>
 
     <!--查询指定行数据-->
@@ -111,6 +112,27 @@
         SELECT * FROM	table_link
         WHERE `status` = #{status}
     </select>
+    <select id="queryAllByObject" resultMap="BaseResultMap">
+        SELECT * FROM table_link
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%', #{name}, '%')
+            </if>
+            <if test="logo != null and logo != ''">
+                and logo like concat('%', #{logo}, '%')
+            </if>
+            <if test="description != null and description != ''">
+                and description like concat('%', #{description}, '%')
+            </if>
+            <if test="address != null and address != ''">
+                and address like concat('%', #{address}, '%')
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            and status != -1
+        </where>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
@@ -183,6 +205,14 @@
     <delete id="deleteById">
         delete from table_link where id = #{id}
     </delete>
+    <update id="deleteByIdBatch">
+        update table_link
+        set status = -1
+        where id in
+    <foreach collection="ids" item="id" open="(" close=")" separator=",">
+        #{id}
+    </foreach>
+    </update>
 
 </mapper>
 

@@ -79,5 +79,19 @@ public interface LinkDao {
      */
     List<Link> queryAllByStatus(Integer status);
 
+    /**
+     * 通过对象查询
+     *
+     * @return 对象列表
+     */
+    List<Link> queryAllByObject(Link link);
+
+    /**
+     * 批量删除
+     *
+     * @param ids id列表
+     * @return 影响行数
+     */
+    int deleteByIdBatch(@Param("ids") List<Integer> ids);
 }
 

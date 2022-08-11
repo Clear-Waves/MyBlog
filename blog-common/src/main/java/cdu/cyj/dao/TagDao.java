@@ -98,5 +98,21 @@ public interface TagDao {
     List<Integer> queryIdsByArticleId(Integer articleId);
 
     List<Tag> queryAllByIds(@Param("ids") List<Integer> ids);
+
+    /**
+     * 通过对象查询tag列表
+     *
+     * @param tag tag对象
+     * @return tag列表
+     */
+    List<Tag> queryAllByObject(Tag tag);
+
+    /**
+     * 批量通过id删除
+     *
+     * @param ids id列表
+     * @return 影响行数
+     */
+    int deleteByIdBatch(@Param("ids") List<Integer> ids);
 }
 
