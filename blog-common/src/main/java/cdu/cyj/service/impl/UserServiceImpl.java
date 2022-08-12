@@ -4,6 +4,7 @@ import cdu.cyj.dao.UserDao;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.User;
 import cdu.cyj.domain.vo.AdminUserInfoVo;
+import cdu.cyj.domain.vo.PageVo;
 import cdu.cyj.domain.vo.UserInfoVo;
 import cdu.cyj.enums.AppHttpCodeEnum;
 import cdu.cyj.exception.SystemException;
@@ -11,6 +12,8 @@ import cdu.cyj.service.UserService;
 import cdu.cyj.utils.AutoFilledUtils;
 import cdu.cyj.utils.BeanCopyUtils;
 import cdu.cyj.utils.SecurityUtils;
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -112,5 +115,17 @@ public class UserServiceImpl implements UserService {
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.ADD_ERROR);
         }
+    }
+
+    @Override
+    public ResponseResult<?> listUser(User user, Integer pageNum, Integer pageSize) {
+        // 分页
+        PageHelper.startPage(pageNum, pageSize);
+        // 调用dao查询
+        List<User> users = userDao.queryByObject(user);
+        // 封装返回
+        PageInfo<User> userPageInfo = new PageInfo<>(users);
+        PageVo pageVo = new PageVo(users, userPageInfo.getTotal());
+        return ResponseResult.okResult(pageVo);
     }
 }

@@ -31,7 +31,7 @@ public class User implements Serializable {
     
     private Integer age;
     
-    private String tel;
+    private String phoneNumber;
     
     private String email;
     /**

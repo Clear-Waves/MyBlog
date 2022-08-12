@@ -34,4 +34,14 @@ public interface UserService {
      * @return 统一返回
      */
     ResponseResult<?> register(User user);
+
+    /**
+     * 查询用户列表
+     *
+     * @param user user对象
+     * @param pageNum 页码
+     * @param pageSize 页大小
+     * @return 统一返回对象
+     */
+    ResponseResult<?> listUser(User user, Integer pageNum, Integer pageSize);
 }

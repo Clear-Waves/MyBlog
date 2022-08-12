@@ -112,5 +112,6 @@ public interface UserDao {
      */
     Integer emailExist(String email);
 
+    List<User> queryByObject(User user);
 }
 

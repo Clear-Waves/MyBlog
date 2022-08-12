@@ -10,7 +10,7 @@
         <result property="nickName" column="nick_name" jdbcType="VARCHAR"/>
         <result property="sex" column="gender" jdbcType="INTEGER"/>
         <result property="age" column="age" jdbcType="INTEGER"/>
-        <result property="tel" column="tel" jdbcType="VARCHAR"/>
+        <result property="phoneNumber" column="tel" jdbcType="VARCHAR"/>
         <result property="email" column="email" jdbcType="VARCHAR"/>
         <result property="status" column="status" jdbcType="INTEGER"/>
         <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
@@ -26,6 +26,7 @@
           id, user_name, pass_word, nick_name, gender, age, tel, email, status, create_time, update_time, avatar_url
         from table_user
         where id = #{id}
+        and status != -1
     </select>
 
     <!--查询指定行数据-->
@@ -53,7 +54,7 @@
                 and age = #{age}
             </if>
             <if test="tel != null and tel != ''">
-                and tel = #{tel}
+                and tel = #{phoneNumber}
             </if>
             <if test="email != null and email != ''">
                 and email = #{email}
@@ -79,6 +80,7 @@
         select
           id, user_name, pass_word, nick_name, gender, age, tel, email, status, create_time, update_time, avatar_url
         from myBlog.table_user
+        where status != -1
     </select>
     <!--统计总行数-->
     <select id="count" resultType="java.lang.Long">
@@ -104,7 +106,7 @@
                 and age = #{age}
             </if>
             <if test="tel != null and tel != ''">
-                and tel = #{tel}
+                and tel = #{phoneNumber}
             </if>
             <if test="email != null and email != ''">
                 and email = #{email}
@@ -126,6 +128,7 @@
     <select id="queryByUserName" resultMap="BaseResultMap">
         select * from table_user
         where user_name = #{userName}
+        and status != -1
     </select>
     <select id="userNameExist" resultType="java.lang.Integer">
         select 1 from table_user
@@ -142,11 +145,29 @@
         where email = #{email}
         limit 1
     </select>
+    <select id="queryByObject" resultMap="BaseResultMap">
+        select * from table_user
+        <if test="userName != null and userName != ''">
+            and user_name = #{userName}
+        </if>
+        <if test="phoneNumber != null and phoneNumber != ''">
+            and tel = #{phoneNumber}
+        </if>
+        <if test="email != null and email != ''">
+            and email = #{email}
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="avatar != null and avatar != ''">
+            and avatar_url = #{avatar}
+        </if>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
         insert into table_user(user_name, pass_word, nick_name, gender, age, tel, email, create_time, update_time, avatar_url, update_by, create_by)
-        values (#{userName}, #{passWord}, #{nickName}, #{sex}, #{age}, #{tel}, #{email}, #{createTime}, #{updateTime}, #{avatar}, #{updateBy}, #{createBy})
+        values (#{userName}, #{passWord}, #{nickName}, #{sex}, #{age}, #{phoneNumber}, #{email}, #{createTime}, #{updateTime}, #{avatar}, #{updateBy}, #{createBy})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
@@ -190,8 +211,8 @@
             <if test="age != null">
                 age = #{age},
             </if>
-            <if test="tel != null and tel != ''">
-                tel = #{tel},
+            <if test="phoneNumber != null and phoneNumber != ''">
+                tel = #{phoneNumber},
             </if>
             <if test="email != null and email != ''">
                 email = #{email},
