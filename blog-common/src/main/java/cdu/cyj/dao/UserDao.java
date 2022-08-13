@@ -113,5 +113,7 @@ public interface UserDao {
     Integer emailExist(String email);
 
     List<User> queryByObject(User user);
+
+    Integer insertUserRoleBatch(@Param("uid") Integer uid, @Param("roleIds") List<Integer> roleIds);
 }
 

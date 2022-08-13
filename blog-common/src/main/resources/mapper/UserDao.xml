@@ -166,8 +166,8 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into table_user(user_name, pass_word, nick_name, gender, age, tel, email, create_time, update_time, avatar_url, update_by, create_by)
-        values (#{userName}, #{passWord}, #{nickName}, #{sex}, #{age}, #{phoneNumber}, #{email}, #{createTime}, #{updateTime}, #{avatar}, #{updateBy}, #{createBy})
+        insert into table_user(user_name, pass_word, nick_name, gender, age, tel, email, status, create_time, update_time, avatar_url, update_by, create_by)
+        values (#{userName}, #{passWord}, #{nickName}, #{sex}, #{age}, #{phoneNumber}, #{email}, #{status}, #{createTime}, #{updateTime}, #{avatar}, #{updateBy}, #{createBy})
     </insert>
 
     <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
@@ -196,6 +196,13 @@
         create_time = values(create_time),
         update_time = values(update_time),
         avatar_url = values(avatar_url)
+    </insert>
+    <insert id="insertUserRoleBatch">
+        insert into table_user_role_ref(uid, rid)
+        values
+        <foreach collection="roleIds" item="roleId" separator=",">
+            (#{uid}, #{roleId})
+        </foreach>
     </insert>
 
     <!--通过主键修改数据-->

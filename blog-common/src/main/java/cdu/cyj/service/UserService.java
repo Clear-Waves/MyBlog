@@ -1,6 +1,7 @@
 package cdu.cyj.service;
 
 import cdu.cyj.domain.ResponseResult;
+import cdu.cyj.domain.dto.UserAddDto;
 import cdu.cyj.domain.entity.User;
 
 public interface UserService {
@@ -44,4 +45,21 @@ public interface UserService {
      * @return 统一返回对象
      */
     ResponseResult<?> listUser(User user, Integer pageNum, Integer pageSize);
+
+    /**
+     * 通过id查询用户详情
+     *
+     *
+     * @param id 用户id
+     * @return 统一返回对象
+     */
+    ResponseResult<?> userDetail(Integer id);
+
+    /**
+     * 添加用户
+     *
+     * @param userAddDto 添加用户dto
+     * @return 统一返回对象
+     */
+    ResponseResult<?> addUser(UserAddDto userAddDto);
 }

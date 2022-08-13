@@ -1,11 +1,12 @@
 package cdu.cyj.service.impl;
 
+import cdu.cyj.dao.RoleDao;
 import cdu.cyj.dao.UserDao;
 import cdu.cyj.domain.ResponseResult;
+import cdu.cyj.domain.dto.UserAddDto;
+import cdu.cyj.domain.entity.Role;
 import cdu.cyj.domain.entity.User;
-import cdu.cyj.domain.vo.AdminUserInfoVo;
-import cdu.cyj.domain.vo.PageVo;
-import cdu.cyj.domain.vo.UserInfoVo;
+import cdu.cyj.domain.vo.*;
 import cdu.cyj.enums.AppHttpCodeEnum;
 import cdu.cyj.exception.SystemException;
 import cdu.cyj.service.UserService;
@@ -18,12 +19,14 @@ import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -33,6 +36,9 @@ public class UserServiceImpl implements UserService {
 
     @Resource
     private PasswordEncoder passwordEncoder;
+
+    @Resource
+    private RoleDao roleDao;
 
     @Override
     public ResponseResult<?> userInfo() {
@@ -124,8 +130,57 @@ public class UserServiceImpl implements UserService {
         // 调用dao查询
         List<User> users = userDao.queryByObject(user);
         // 封装返回
+        List<AdminUserListVo> adminUserListVos = BeanCopyUtils.copyBeanList(users, AdminUserListVo.class);
         PageInfo<User> userPageInfo = new PageInfo<>(users);
-        PageVo pageVo = new PageVo(users, userPageInfo.getTotal());
+        PageVo pageVo = new PageVo(adminUserListVos, userPageInfo.getTotal());
         return ResponseResult.okResult(pageVo);
     }
+
+    @Override
+    public ResponseResult<?> userDetail(Integer id) {
+        // 调用dao插叙
+        User user = userDao.queryById(id);
+        // 调用roleDao查询角色数据
+        List<Role> roleList = roleDao.queryAll();
+        List<AdminRoleOptionListVo> adminRoleOptionListVos = BeanCopyUtils.copyBeanList(roleList, AdminRoleOptionListVo.class);
+        // 封装roleIds
+        List<Integer> ids = adminRoleOptionListVos.stream()
+                .map(AdminRoleOptionListVo::getId)
+                .collect(Collectors.toList());
+        // 封装返回
+        AdminUserDetailVo adminUserDetailVo = BeanCopyUtils.copyBean(user, AdminUserDetailVo.class);
+
+        // 封装
+        AdminUserUpdateVo adminUserUpdateVo = new AdminUserUpdateVo(adminUserDetailVo, adminRoleOptionListVos, ids);
+        return ResponseResult.okResult(adminUserUpdateVo);
+    }
+
+    @Transactional
+    @Override
+    public ResponseResult<?> addUser(UserAddDto userAddDto) {
+
+        // 类转换
+        User user = BeanCopyUtils.copyBean(userAddDto, User.class);
+        // 自动填充
+        AutoFilledUtils.autoFillOnInsert(user);
+        // 密码加密
+        String encodePassword = passwordEncoder.encode(user.getPassWord());
+        user.setPassWord(encodePassword);
+        /*
+           调用dao进行插入：
+              1. 插入user表
+              2. 插入user-role中间表
+        */
+        int insertUser = userDao.insert(user);
+        int insertUserRole = userDao.insertUserRoleBatch(user.getId(), userAddDto.getRoleIds());
+
+        // 封装返回
+        if (insertUser == 1 && insertUserRole == userAddDto.getRoleIds().size()) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+
 }
