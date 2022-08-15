@@ -2,7 +2,11 @@ package cdu.cyj.service;
 
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.UserAddDto;
+import cdu.cyj.domain.dto.UserUpdateDto;
 import cdu.cyj.domain.entity.User;
+import cdu.cyj.domain.vo.AdminUserUpdateVo;
+
+import java.util.List;
 
 public interface UserService {
 
@@ -62,4 +66,29 @@ public interface UserService {
      * @return 统一返回对象
      */
     ResponseResult<?> addUser(UserAddDto userAddDto);
+
+    /**
+     * 后台更新用户数据
+     * @param updateVo 用户更新dto
+     *
+     * @return 统一返回对象
+     */
+    ResponseResult<?> adminUpdateUser(UserUpdateDto updateVo);
+
+    /**
+     * 更改用户状态
+     *
+     * @param userId 用户id
+     * @param status 用户状态
+     * @return 统一返回对象
+     */
+    ResponseResult<?> changeStatus(Integer userId, Integer status);
+
+    /**
+     * 删除用户
+     *
+     * @param userIds 用户id列表
+     * @return 统一返回对象
+     */
+    ResponseResult<?> deleteUser(List<Integer> userIds);
 }

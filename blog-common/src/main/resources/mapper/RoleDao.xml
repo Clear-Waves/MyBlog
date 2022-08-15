@@ -22,6 +22,7 @@
           id, role_name, role_key, role_sort, status, create_by, create_time, update_by, update_time, remark
         from table_role
         where id = #{id}
+        and status != -1
     </select>
 
     <!--查询指定行数据-->
@@ -108,6 +109,42 @@
             </if>
         </where>
     </select>
+    <select id="queryALlByObject" resultMap="BaseResultMap">
+        select * from table_role
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="roleName != null and roleName != ''">
+                and role_name = #{roleName}
+            </if>
+            <if test="roleKey != null and roleKey != ''">
+                and role_key = #{roleKey}
+            </if>
+            <if test="roleSort != null">
+                and role_sort = #{roleSort}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="createBy != null">
+                and create_by = #{createBy}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateBy != null">
+                and update_by = #{updateBy}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="remark != null and remark != ''">
+                and remark = #{remark}
+            </if>
+            and status != -1
+        </where>
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
@@ -139,6 +176,14 @@
         update_by = values(update_by),
         update_time = values(update_time),
         remark = values(remark)
+    </insert>
+    <insert id="insertRoleMenuBatch">
+        insert into table_role_menu_ref
+        (rid, mid)
+        values
+        <foreach collection="menuIds" separator="," item="menuId">
+            (#{rid}, #{menuId})
+        </foreach>
     </insert>
 
     <!--通过主键修改数据-->
@@ -175,11 +220,37 @@
         </set>
         where id = #{id}
     </update>
+    <update id="updateRoleMenu">
+
+    </update>
 
     <!--通过主键删除-->
     <delete id="deleteById">
         delete from table_role where id = #{id}
     </delete>
+    <update id="deleteRoleMenuByRoleIdBatch">
+        update table_role_menu_ref
+        set status = -1
+        where rid in
+        <foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
+            #{roleId}
+        </foreach>
+        and status != -1
+    </update>
+    <update id="deleteByIdBatch">
+        update table_role
+        set status = -1
+        where id in
+        <foreach collection="roleIds" item="roleId" separator="," open="(" close=")">
+            #{roleId}
+        </foreach>
+        and status != -1
+    </update>
+    <update id="deleteRoleMenuByRoleId">
+        update table_role_menu_ref
+        set status = -1
+        where rid = #{rid}
+    </update>
 
 </mapper>
 

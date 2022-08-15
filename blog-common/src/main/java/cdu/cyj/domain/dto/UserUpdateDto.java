@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @Data
@@ -23,8 +26,11 @@ public class UserUpdateDto {
     /**
      * 状态：0：正常；1：停用；-1：删除
      */
+    @DecimalMax(value = "1", message = "状态码错误")
+    @DecimalMin(value = "0", message = "状态码错误")
     private Integer status;
 
+    @NotEmpty(message = "角色列表不能为空")
     private List<Integer> roleIds;
 
 }

@@ -141,6 +141,11 @@
         AND visible = #{visible}
         AND parent = #{parent}
     </select>
+    <select id="queryAllByRoleId" resultType="java.lang.Integer">
+        select mid from table_role_menu_ref
+        where rid = #{rid}
+        and status != -1
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

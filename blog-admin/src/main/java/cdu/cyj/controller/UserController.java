@@ -6,9 +6,15 @@ import cdu.cyj.domain.dto.UserUpdateDto;
 import cdu.cyj.domain.entity.User;
 import cdu.cyj.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.util.List;
+import java.util.Map;
+
 @RestController
+@Validated
 public class UserController {
 
     @Autowired
@@ -35,8 +41,18 @@ public class UserController {
     }
 
     @PutMapping("/system/user")
-    public ResponseResult<?> update(@RequestBody UserUpdateDto userUpdateDto) {
-        return null;
+    public ResponseResult<?> update(@RequestBody @Valid UserUpdateDto userUpdateDto) {
+        return userService.adminUpdateUser(userUpdateDto);
+    }
+
+    @PutMapping("/system/user/changeStatus")
+    public ResponseResult<?> changeStatus(@RequestBody Map<String, Integer> map) {
+        return userService.changeStatus(map.get("userId"), map.get("status"));
+    }
+
+    @DeleteMapping("/system/user/{userIds}")
+    public ResponseResult<?> delUser(@PathVariable List<Integer> userIds) {
+        return userService.deleteUser(userIds);
     }
 
 }

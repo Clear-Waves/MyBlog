@@ -115,5 +115,36 @@ public interface UserDao {
     List<User> queryByObject(User user);
 
     Integer insertUserRoleBatch(@Param("uid") Integer uid, @Param("roleIds") List<Integer> roleIds);
+
+    /**
+     * 删除对应用户id的角色数据
+     *
+     * @return 受影响行数
+     */
+    int deleteUserRoleByUserId(Integer uid);
+
+    /**
+     * 通过用户id查询对应的roleIds
+     *
+     * @param id 用户id
+     * @return roleIds
+     */
+    List<Integer> queryRoleIdsByUserId(Integer id);
+
+    /**
+     * 通过id批量删除
+     *
+     * @param userIds id列表
+     * @return 受影响行数
+     */
+    int deleteByIdBatch(@Param("ids") List<Integer> userIds);
+
+    /**
+     * 批量删除用户角色中间表
+     *
+     * @param userIds 用户id列表
+     * @return 受影响行数
+     */
+    int deleteUserRoleByUserIdBatch(@Param("ids") List<Integer> userIds);
 }
 

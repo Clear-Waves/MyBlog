@@ -91,5 +91,12 @@ public interface MenuDao {
      */
     int deleteById(Integer id);
 
+    /**
+     * 通过角色id查询对应的菜单id
+     *
+     * @param rid 角色id
+     * @return 菜单id列表
+     */
+    List<Integer> queryAllByRoleId(Integer rid);
 }
 

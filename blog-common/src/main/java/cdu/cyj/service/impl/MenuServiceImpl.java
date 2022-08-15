@@ -3,6 +3,7 @@ package cdu.cyj.service.impl;
 import cdu.cyj.dao.MenuDao;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.Menu;
+import cdu.cyj.domain.vo.MenuTreeVo;
 import cdu.cyj.domain.vo.RouterMetaVo;
 import cdu.cyj.domain.vo.RouterVo;
 import cdu.cyj.service.MenuService;
@@ -28,6 +29,9 @@ public class MenuServiceImpl implements MenuService {
         // 封装到vo
         List<RouterVo> routerVoList = BeanCopyUtils.copyBeanList(rootMenu, RouterVo.class);
 
+        // 查询对应用户角色拥有的菜单权限
+        // 只返回用户有权限的菜单
+
         // 使用stream流装入children
         routerVoList = routerVoList.stream()
                 .map(routerVo -> routerVo.setChildren(getChildren(routerVo.getId())))
@@ -41,11 +45,59 @@ public class MenuServiceImpl implements MenuService {
         return ResponseResult.okResult(map);
     }
 
+    @Override
+    public ResponseResult<?> getTree() {
+        // 查询根菜单
+        List<Menu> rootMenu = menuDao.queryAllByStatusAndVisibleAndParent(0, 1, -1);
+        // 封装到vo
+        List<MenuTreeVo> menuTreeVos = BeanCopyUtils.copyBeanList(rootMenu, MenuTreeVo.class);
+
+        for (int i = 0; i < rootMenu.size(); i++) {
+            menuTreeVos.get(i).setLabel(rootMenu.get(i).getTitle());
+        }
+
+        // 使用stream流装入children
+        menuTreeVos = menuTreeVos.stream()
+                .map(menuTreeVo -> menuTreeVo.setChildren(getMenuChildren(menuTreeVo.getId())))
+                .collect(Collectors.toList());
+
+        return ResponseResult.okResult(menuTreeVos);
+    }
+
+    @Override
+    public ResponseResult<?> getTreeByRoleId(Integer rid) {
+
+        // 获取菜单树结构
+        ResponseResult<?> tree = getTree();
+        Object data = tree.getData();
+        // 获取当前角色的可用菜单
+        List<Integer> menuIds = menuDao.queryAllByRoleId(rid);
+
+        // 封装返回
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("menus", data);
+        map.put("checkedKeys", menuIds);
+        return ResponseResult.okResult(map);
+
+    }
+
     private List<RouterVo> getChildren(Integer rootId) {
         List<Menu> childrenMenu = menuDao.queryAllByStatusAndVisibleAndParent(0, 1, rootId);
         List<RouterVo> routerVos = BeanCopyUtils.copyBeanList(childrenMenu, RouterVo.class);
         return routerVos.stream()
                 .map(routerVo -> routerVo.setMeta(BeanCopyUtils.copyBean(routerVo, RouterMetaVo.class)))
                 .collect(Collectors.toList());
+    }
+
+    private List<MenuTreeVo> getMenuChildren(Integer rootId) {
+        List<Menu> childrenMenu = menuDao.queryAllByStatusAndVisibleAndParent(0, 1, rootId);
+        // 封装到vo
+        List<MenuTreeVo> menuTreeVos = BeanCopyUtils.copyBeanList(childrenMenu, MenuTreeVo.class);
+
+        for (int i = 0; i < childrenMenu.size(); i++) {
+            menuTreeVos.get(i).setLabel(childrenMenu.get(i).getTitle());
+        }
+
+        return menuTreeVos;
     }
 }

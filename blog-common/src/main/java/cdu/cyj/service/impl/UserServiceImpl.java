@@ -4,6 +4,7 @@ import cdu.cyj.dao.RoleDao;
 import cdu.cyj.dao.UserDao;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.UserAddDto;
+import cdu.cyj.domain.dto.UserUpdateDto;
 import cdu.cyj.domain.entity.Role;
 import cdu.cyj.domain.entity.User;
 import cdu.cyj.domain.vo.*;
@@ -143,10 +144,8 @@ public class UserServiceImpl implements UserService {
         // 调用roleDao查询角色数据
         List<Role> roleList = roleDao.queryAll();
         List<AdminRoleOptionListVo> adminRoleOptionListVos = BeanCopyUtils.copyBeanList(roleList, AdminRoleOptionListVo.class);
-        // 封装roleIds
-        List<Integer> ids = adminRoleOptionListVos.stream()
-                .map(AdminRoleOptionListVo::getId)
-                .collect(Collectors.toList());
+        // 查询该用户的角色id
+        List<Integer> ids = userDao.queryRoleIdsByUserId(id);
         // 封装返回
         AdminUserDetailVo adminUserDetailVo = BeanCopyUtils.copyBean(user, AdminUserDetailVo.class);
 
@@ -176,6 +175,65 @@ public class UserServiceImpl implements UserService {
 
         // 封装返回
         if (insertUser == 1 && insertUserRole == userAddDto.getRoleIds().size()) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @Transactional
+    @Override
+    public ResponseResult<?> adminUpdateUser(UserUpdateDto userUpdateDto) {
+
+        // 类转换
+        User user = BeanCopyUtils.copyBean(userUpdateDto, User.class);
+        // 自动填充
+        AutoFilledUtils.autoFillOnUpdate(user);
+        // 删除用户角色对应信息
+        userDao.deleteUserRoleByUserId(user.getId());
+        // 添加用户角色对应信息
+        Integer countRole = userDao.insertUserRoleBatch(user.getId(), userUpdateDto.getRoleIds());
+        // 更新用户信息
+        int countUser = userDao.update(user);
+        // 封装返回
+        if (countRole == userUpdateDto.getRoleIds().size() && countUser == 1) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult<?> changeStatus(Integer userId, Integer status) {
+        // 检查参数
+        if (userId == null || status == null || status < 0 || status >1) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAMETER_ERROR);
+        }
+        // 封装类
+        User user = new User();
+        user.setStatus(status);
+        user.setId(userId);
+        // 自动填充
+        AutoFilledUtils.autoFillOnUpdate(user);
+        // 调用dao进行更新
+        int update = userDao.update(user);
+        // 封装返回
+        if (update == 1) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @Transactional
+    @Override
+    public ResponseResult<?> deleteUser(List<Integer> userIds) {
+        // 调用dao删除用户记录
+        int count = userDao.deleteByIdBatch(userIds);
+        // 调用dao删除用户-角色记录
+        userDao.deleteUserRoleByUserIdBatch(userIds);
+        // 封装返回
+        if (count == userIds.size()) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
