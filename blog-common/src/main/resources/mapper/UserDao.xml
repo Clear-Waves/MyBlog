@@ -222,7 +222,7 @@
             <if test="nickName != null and nickName != ''">
                 nick_name = #{nickName},
             </if>
-            <if test="sex != null and sex != ''">
+            <if test="sex != null">
                 gender = #{sex},
             </if>
             <if test="age != null">

@@ -4,6 +4,8 @@ import cdu.cyj.domain.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-07-28 14:51:51
  */
-@Mapper
+@Repository
 public interface UserDao {
 
     /**

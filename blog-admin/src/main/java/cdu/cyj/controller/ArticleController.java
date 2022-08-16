@@ -5,12 +5,14 @@ import cdu.cyj.domain.dto.ArticleAddDto;
 import cdu.cyj.domain.dto.ArticleUpdateDto;
 import cdu.cyj.service.ArticleService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/content/article")
+@PreAuthorize("hasAuthority('content:article')")
 public class ArticleController {
 
     @Autowired

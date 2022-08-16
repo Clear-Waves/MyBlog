@@ -63,10 +63,10 @@ public class UserServiceImpl implements UserService {
         // 封装
         AdminUserInfoVo adminUserInfoVo = BeanCopyUtils.copyBean(user, AdminUserInfoVo.class);
         Map<String, Object> map = new HashMap<>();
-        List<String> roles = new ArrayList<>();
-        roles.add("admin");
+        List<Integer> ids = roleDao.queryIdsByUserId(userId);
+        List<Role> roleList = roleDao.queryAllByIds(ids);
         map.put("user", adminUserInfoVo);
-        map.put("roles", roles);
+        map.put("roles", roleList);
         map.put("permissions", null);
         return ResponseResult.okResult(map);
     }

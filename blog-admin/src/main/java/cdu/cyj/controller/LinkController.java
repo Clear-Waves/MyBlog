@@ -6,6 +6,7 @@ import cdu.cyj.domain.dto.LinkUpdateDto;
 import cdu.cyj.domain.entity.Link;
 import cdu.cyj.service.LinkService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,6 +16,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/content/link")
+@PreAuthorize("hasAuthority('content:link')")
 @Validated
 public class LinkController {
 

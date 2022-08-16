@@ -1,8 +1,8 @@
 package cdu.cyj.dao;
 
 import cdu.cyj.domain.entity.Link;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-07-27 09:54:35
  */
-@Mapper
+@Repository
 public interface LinkDao {
 
     /**

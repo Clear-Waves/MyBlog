@@ -4,6 +4,8 @@ import cdu.cyj.domain.entity.Menu;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-08-07 10:15:59
  */
-@Mapper
+@Repository
 public interface MenuDao {
 
     /**
@@ -98,5 +100,23 @@ public interface MenuDao {
      * @return 菜单id列表
      */
     List<Integer> queryAllByRoleId(Integer rid);
+
+    /**
+     * 通过角色id列表查询对应的菜单id
+     *
+     * @param roleIds 角色id列表
+     * @return 菜单id列表
+     */
+    List<Integer> queryIdByRoleIds(@Param("roleIds") List<Integer> roleIds);
+
+    List<Menu> queryByIdBatch(List<Integer> menuIds);
+
+    /**
+     * 通过状态查询对应权限
+     *
+     * @param status 状态
+     * @return 菜单列表
+     */
+    List<Menu> queryAllByStatus(Integer status);
 }
 

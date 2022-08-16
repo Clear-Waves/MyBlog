@@ -3,6 +3,8 @@ package cdu.cyj.dao;
 import cdu.cyj.domain.entity.Role;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 /**
@@ -11,6 +13,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-08-13 15:36:46
  */
+@Repository
 public interface RoleDao {
 
     /**
@@ -133,5 +136,15 @@ public interface RoleDao {
      * @return 受影响行
      */
     int deleteRoleMenuByRoleIdBatch(@Param("roleIds") List<Integer> roleIds);
+
+    /**
+     * 通过用户id查询角色id列表
+     *
+     * @param userId 用户id
+     * @return 角色id列表
+     */
+    List<Integer> queryIdsByUserId(Integer userId);
+
+    List<Role> queryAllByIds(@Param("ids") List<Integer> ids);
 }
 

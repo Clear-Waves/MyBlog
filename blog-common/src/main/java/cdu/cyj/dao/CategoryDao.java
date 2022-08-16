@@ -2,6 +2,8 @@ package cdu.cyj.dao;
 
 import cdu.cyj.domain.entity.Category;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 /**
@@ -10,6 +12,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-07-25 10:04:34
  */
+@Repository
 public interface CategoryDao {
 
     /**

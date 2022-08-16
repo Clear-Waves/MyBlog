@@ -146,6 +146,27 @@
         where rid = #{rid}
         and status != -1
     </select>
+    <select id="queryIdByRoleIds" resultType="java.lang.Integer">
+        select mid from table_role_menu_ref
+        where rid in
+        <foreach collection="roleIds" open="(" close=")" separator="," item="roleId">
+            #{roleId}
+        </foreach>
+        and status != -1
+    </select>
+    <select id="queryByIdBatch" resultMap="BaseResultMap">
+        select * from table_menu
+        where id in
+        <foreach collection="ids" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        and status != -1
+    </select>
+    <select id="queryAllByStatus" resultMap="BaseResultMap">
+        select * from table_menu
+        where status = #{status}
+        and status != -1
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

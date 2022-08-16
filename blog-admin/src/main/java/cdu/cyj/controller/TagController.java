@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/content/tag")
-public class    TagController {
+public class TagController {
 
     @Autowired
     private TagService tagService;

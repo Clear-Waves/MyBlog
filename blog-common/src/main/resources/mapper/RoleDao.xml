@@ -145,6 +145,19 @@
             and status != -1
         </where>
     </select>
+    <select id="queryIdsByUserId" resultType="java.lang.Integer">
+        select rid from table_user_role_ref
+        where uid = #{userId}
+        and status != -1
+    </select>
+    <select id="queryAllByIds" resultMap="BaseResultMap">
+        select * from table_role
+        where id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        and status != -1
+    </select>
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">

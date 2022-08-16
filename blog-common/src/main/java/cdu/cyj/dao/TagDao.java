@@ -5,6 +5,8 @@ import cdu.cyj.domain.entity.Tag;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ import java.util.List;
  * @author makejava
  * @since 2022-08-05 15:10:14
  */
-@Mapper
+@Repository
 public interface TagDao {
 
     /**

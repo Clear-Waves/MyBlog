@@ -3,6 +3,8 @@ package cdu.cyj.dao;
 import cdu.cyj.domain.entity.Article;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
 /**
@@ -12,7 +14,7 @@ import java.util.List;
  * @since 2022-07-20 13:04:25
  */
 
-@Mapper
+@Repository
 public interface ArticleDao {
 
     /**
