@@ -6,7 +6,6 @@ import cdu.cyj.domain.entity.User;
 import cdu.cyj.service.AdminLoginService;
 import cdu.cyj.utils.JwtUtil;
 import cdu.cyj.utils.RedisCache;
-import cdu.cyj.utils.SecurityUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

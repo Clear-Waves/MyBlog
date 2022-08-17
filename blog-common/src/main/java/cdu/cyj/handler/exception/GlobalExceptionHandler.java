@@ -5,6 +5,8 @@ import cdu.cyj.enums.AppHttpCodeEnum;
 import cdu.cyj.exception.SystemException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -40,6 +42,18 @@ public class GlobalExceptionHandler {
         ResponseResult<List<String>> responseResult = new ResponseResult<>(AppHttpCodeEnum.PARAMETER_ERROR.getCode(), AppHttpCodeEnum.PARAMETER_ERROR.getMsg());
         responseResult.setData(messages);
         return responseResult;
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseResult<?> userNamePasswordExceptionHandler(BadCredentialsException e) {
+        log.error("出现异常：{}", e.getMessage(), e);
+        return ResponseResult.errorResult(AppHttpCodeEnum.LOGIN_ERROR);
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseResult<?> accessDeniedException(AccessDeniedException e) {
+        log.error("出现异常：{}", e.getMessage(), e);
+        return ResponseResult.errorResult(AppHttpCodeEnum.NO_OPERATOR_AUTH);
     }
 
 }

@@ -6,7 +6,6 @@ import cdu.cyj.handler.security.AuthenticationEntryPointImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -52,10 +51,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 // 允许login路径匿名访问
-                .antMatchers("/login").anonymous()
-                .antMatchers("/logout").authenticated()
-                // 允许其他所有路径
-                .anyRequest().permitAll();
+                .antMatchers("/user/login").anonymous()
+                // 其他所有路径均需要验证
+                .anyRequest().authenticated();
 
         http.logout().disable();
 

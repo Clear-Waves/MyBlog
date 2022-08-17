@@ -1,17 +1,6 @@
 package cdu.cyj;
 
-import com.qiniu.common.QiniuException;
-import com.qiniu.http.Response;
-import com.qiniu.storage.Configuration;
-import com.qiniu.storage.Region;
-import com.qiniu.storage.UploadManager;
-import com.qiniu.storage.model.DefaultPutRet;
-import com.qiniu.util.Auth;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-
-import java.io.FileInputStream;
-import java.io.InputStream;
 
 //@SpringBootTest
 class BlogCommonApplicationTests {

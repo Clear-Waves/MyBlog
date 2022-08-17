@@ -1,7 +1,6 @@
 package cdu.cyj.dao;
 
 import cdu.cyj.domain.entity.Comment;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;

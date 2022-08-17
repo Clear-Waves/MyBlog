@@ -1,7 +1,6 @@
 package cdu.cyj.dao;
 
 import cdu.cyj.domain.entity.Article;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 

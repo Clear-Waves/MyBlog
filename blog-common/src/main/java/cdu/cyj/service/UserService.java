@@ -4,7 +4,6 @@ import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.UserAddDto;
 import cdu.cyj.domain.dto.UserUpdateDto;
 import cdu.cyj.domain.entity.User;
-import cdu.cyj.domain.vo.AdminUserUpdateVo;
 
 import java.util.List;
 

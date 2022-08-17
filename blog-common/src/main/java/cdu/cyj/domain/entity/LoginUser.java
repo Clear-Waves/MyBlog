@@ -1,13 +1,14 @@
 package cdu.cyj.domain.entity;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,9 +22,11 @@ public class LoginUser implements UserDetails {
 
     private List<String> permission;
 
+    @JSONField(serialize = false)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return permission.stream()
+                .filter(StringUtils::hasText)
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
     }

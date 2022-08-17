@@ -39,7 +39,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        Claims claims = null;
+        Claims claims;
 
         try {
             claims = JwtUtil.parseJWT(token);
@@ -67,7 +67,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         }
 
         // 将查询出的登录用户信息存入security
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, null);
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginUser, null, loginUser.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);

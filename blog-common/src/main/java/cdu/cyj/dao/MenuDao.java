@@ -1,7 +1,6 @@
 package cdu.cyj.dao;
 
 import cdu.cyj.domain.entity.Menu;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
@@ -109,7 +108,13 @@ public interface MenuDao {
      */
     List<Integer> queryIdByRoleIds(@Param("roleIds") List<Integer> roleIds);
 
-    List<Menu> queryByIdBatch(List<Integer> menuIds);
+    /**
+     * 通过id批量插叙
+     *
+     * @param menuIds 菜单id列表
+     * @return 菜单列表
+     */
+    List<Menu> queryByIdBatch(@Param("ids") List<Integer> menuIds);
 
     /**
      * 通过状态查询对应权限

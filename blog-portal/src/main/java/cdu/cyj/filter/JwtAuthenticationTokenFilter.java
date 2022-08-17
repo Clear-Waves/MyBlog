@@ -7,7 +7,6 @@ import cdu.cyj.utils.JwtUtil;
 import cdu.cyj.utils.RedisCache;
 import cdu.cyj.utils.WebUtils;
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import io.jsonwebtoken.Claims;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +39,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-        Claims claims = null;
+        Claims claims;
 
         try {
             claims = JwtUtil.parseJWT(token);
