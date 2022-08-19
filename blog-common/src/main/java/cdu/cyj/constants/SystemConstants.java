@@ -50,6 +50,15 @@ public class SystemConstants {
     // 友链评论类型代码
     public static final Integer LINK_COMMENT = 1;
 
+    /**
+     * user
+     */
+    // 用户正常状态
+    public static final Integer USER_NORMAL_STATUS = 0;
+
+    // 用户禁用状态
+    public static final Integer USER_DISABLE_STATUS = 1;
+
 
     /**
      * redis

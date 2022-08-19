@@ -1,5 +1,6 @@
 package cdu.cyj.controller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.service.CategoryService;
 import io.swagger.annotations.Api;
@@ -18,6 +19,7 @@ public class CategoryController {
     private CategoryService categoryService;
 
     @GetMapping("/getCategoryList")
+    @SystemLog(businessName = "分类列表")
     @ApiOperation(notes = "查询所有分类列表", value = "分类列表")
     public ResponseResult<?> getCategoryList() {
         return categoryService.getCategoryList();

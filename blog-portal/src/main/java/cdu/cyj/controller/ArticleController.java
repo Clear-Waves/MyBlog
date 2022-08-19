@@ -1,5 +1,6 @@
 package cdu.cyj.controller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.service.ArticleService;
 import io.swagger.annotations.*;
@@ -15,23 +16,26 @@ public class ArticleController {
     private ArticleService articleService;
 
     @GetMapping("/hotArticleList")
+    @SystemLog(businessName = "热门文章列表")
     @ApiOperation(value = "热门文章列表", notes = "获取浏览量前十的文章列表")
     public ResponseResult<?> hotArticleList() {
         return articleService.getHotArticleList();
     }
 
     @GetMapping("/articleList")
+    @SystemLog(businessName = "文章列表")
     @ApiOperation(value = "文章列表", notes = "获取一页文章列表")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "pageNum", value = "页号"),
             @ApiImplicitParam(name = "pageSize", value = "每页大小"),
             @ApiImplicitParam(name = "categoryId", value = "分类ID")
     })
-    public ResponseResult<?> articleList(Integer pageNum, Integer pageSize, Integer categoryId) {
+    public ResponseResult<?> articleList(@RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "10") Integer pageSize, Integer categoryId) {
         return articleService.articleList(pageNum, pageSize, categoryId);
     }
 
     @GetMapping("/{id}")
+    @SystemLog(businessName = "文章详情")
     @ApiOperation(value = "文章详情", notes = "获取一篇文章的详情")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "文章id")
@@ -41,6 +45,7 @@ public class ArticleController {
     }
 
     @PutMapping("/updateViewCount/{id}")
+    @SystemLog(businessName = "更新文章访问量")
     @ApiOperation(value = "更新文章访问量", notes = "更新文章访问量")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "id", value = "文章id")

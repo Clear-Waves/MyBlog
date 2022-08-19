@@ -1,5 +1,6 @@
 package cdu.cyj.controller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,11 +19,13 @@ public class MenuController {
     private MenuService menuService;
 
     @GetMapping("/treeselect")
+    @SystemLog(businessName = "获取树形菜单信息")
     public ResponseResult<?> treeSelect() {
         return menuService.getTree();
     }
 
     @GetMapping("/roleMenuTreeselect/{rid}")
+    @SystemLog(businessName = "获取树形菜单信息")
     public ResponseResult<?> roleMenuTreeSelect(@PathVariable Integer rid) {
         return menuService.getTreeByRoleId(rid);
     }

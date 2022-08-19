@@ -46,6 +46,9 @@ public class UserDetailServiceImpl implements UserDetailsService {
             // 返回用户信息
             // 处理角色与权限信息
             List<Integer> roleIdList = roleDao.queryIdsByUserId(user.getId());
+            if (roleIdList == null || roleIdList.size() == 0) {
+                return new LoginUser(user, null);
+            }
             List<Integer> menuIds = menuDao.queryIdByRoleIds(roleIdList);
             menus = menuDao.queryByIdBatch(menuIds);
         }

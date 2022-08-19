@@ -1,5 +1,6 @@
 package cdu.cyj.controller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.User;
 import cdu.cyj.service.AdminLoginService;
@@ -17,11 +18,13 @@ public class LoginController {
     private AdminLoginService loginService;
 
     @PostMapping("/login")
+    @SystemLog(businessName = "登录")
     public ResponseResult<?> login(@RequestBody User user) {
         return loginService.login(user);
     }
 
     @PostMapping("/logout")
+    @SystemLog(businessName = "登出")
     public ResponseResult<?> portalLogout() {
         return loginService.logout();
     }

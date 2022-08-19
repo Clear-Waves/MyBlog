@@ -25,6 +25,11 @@ public class LoginUser implements UserDetails {
     @JSONField(serialize = false)
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
+
+        if (permission == null) {
+            return null;
+        }
+
         return permission.stream()
                 .filter(StringUtils::hasText)
                 .map(SimpleGrantedAuthority::new)

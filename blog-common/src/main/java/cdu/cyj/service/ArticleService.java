@@ -62,7 +62,7 @@ public interface ArticleService {
     ResponseResult<?> deleteByIdBatch(List<Integer> ids);
 
     /**
-     * 查询人们文章
+     * 查询热门文章
      *
      * @return 统一结果对象
      */

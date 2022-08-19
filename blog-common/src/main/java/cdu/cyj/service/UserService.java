@@ -2,6 +2,8 @@ package cdu.cyj.service;
 
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.UserAddDto;
+import cdu.cyj.domain.dto.UserInfoUpdateDto;
+import cdu.cyj.domain.dto.UserRegisterDto;
 import cdu.cyj.domain.dto.UserUpdateDto;
 import cdu.cyj.domain.entity.User;
 
@@ -26,18 +28,18 @@ public interface UserService {
     /**
      * 更新用户信息
      *
-     * @param user  用户
+     * @param userInfoUpdateDto  用户
      * @return 统一返回
      */
-    ResponseResult<?> updateUserInfo(User user);
+    ResponseResult<?> updateUserInfo(UserInfoUpdateDto userInfoUpdateDto);
 
     /**
      * 注册用户
      *
-     * @param user 用户
+     * @param userRegisterDto 用户
      * @return 统一返回
      */
-    ResponseResult<?> register(User user);
+    ResponseResult<?> register(UserRegisterDto userRegisterDto);
 
     /**
      * 查询用户列表

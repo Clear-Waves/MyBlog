@@ -1,5 +1,6 @@
 package cdu.cyj.controller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.service.LinkService;
 import io.swagger.annotations.Api;
@@ -18,6 +19,7 @@ public class LinkController {
     LinkService linkService;
 
     @GetMapping("/getAllLink")
+    @SystemLog(businessName = "友链列表")
     @ApiOperation(value = "友链列表", notes = "查询所有友链")
     public ResponseResult<?> getAllLink() {
 

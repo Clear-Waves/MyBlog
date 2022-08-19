@@ -1,5 +1,6 @@
 package cdu.cyj.controller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.service.MenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ public class RouterController {
     private MenuService menuService;
 
     @GetMapping("/getRouters")
+    @SystemLog(businessName = "获取路由")
     public ResponseResult<?> getRouters() {
         return menuService.getRouters();
     }

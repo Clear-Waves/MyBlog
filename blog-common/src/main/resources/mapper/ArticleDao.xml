@@ -131,12 +131,16 @@
 
     <!--  查询热门文章列表  -->
     <select id="queryHotArticleList" resultMap="BaseResultMap">
-        select * from table_article where status = 0
+        select * from table_article
+        where status = 0
+        and status != -1
         order by view_count
-        desc limit 0, #{count}
+        desc limit #{count}
     </select>
     <select id="queryAllByStatus" resultMap="BaseResultMap">
-        select * from  table_article where status = #{status}
+        select * from  table_article
+        where status = #{status}
+        and status != -1
         order by isTop
     </select>
     <select id="queryIdsByCategoryId" resultType="java.lang.Integer">

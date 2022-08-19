@@ -20,6 +20,7 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.List;
@@ -72,6 +73,7 @@ public class ArticleServiceImpl implements ArticleService {
      * @param articleDto 实例对象
      * @return 实例对象
      */
+    @Transactional
     @Override
     public ResponseResult<?> insert(ArticleAddDto articleDto) {
         // 获取dto参数
@@ -99,6 +101,7 @@ public class ArticleServiceImpl implements ArticleService {
      * @param articleDto 实例对象dto
      * @return 实例对象
      */
+    @Transactional
     @Override
     public ResponseResult<?> update(ArticleUpdateDto articleDto) {
 
@@ -134,6 +137,7 @@ public class ArticleServiceImpl implements ArticleService {
      * @param id 主键
      * @return 是否成功
      */
+    @Transactional
     @Override
     public ResponseResult<?> deleteById(Integer id) {
         // 逻辑删除、
@@ -141,6 +145,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 删除相关中间表
         int countArticleTag = this.articleDao.deleteArticleTagByArticleId(id);
         int countArticleCategory = this.articleDao.deleteArticleCategoryByArticleId(id);
+        // todo 删除相关评论
 
         if (countArticle == 1 & countArticleCategory == 1) {
             return ResponseResult.okResult();
@@ -149,6 +154,7 @@ public class ArticleServiceImpl implements ArticleService {
         }
     }
 
+    @Transactional
     @Override
     public ResponseResult<?> deleteByIdBatch(List<Integer> ids) {
         // 逻辑删除、
@@ -156,6 +162,8 @@ public class ArticleServiceImpl implements ArticleService {
         // 删除相关中间表
         int countArticleTag = this.articleDao.deleteArticleTagByArticleIdBatch(ids);
         int countArticleCategory = this.articleDao.deleteArticleCategoryByArticleIdBatch(ids);
+
+        // todo 删除相关评论
 
         if (countArticle == ids.size() && countArticleCategory > 0) {
             return ResponseResult.okResult();
@@ -166,17 +174,17 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Override
     public ResponseResult<?> getHotArticleList() {
+        // 调用dao查询
         List<Article> articles = articleDao.queryHotArticleList(SystemConstants.HOT_ARTICLE_COUNT);
-
+        // 封装返回
         List<HotArticleVo> articleVos = BeanCopyUtils.copyBeanList(articles, HotArticleVo.class);
-
         return ResponseResult.okResult(articleVos);
     }
 
     @Override
     public ResponseResult<?> articleList(Integer pageNum, Integer pageSize, Integer categoryId) {
         // 定义接受对象
-        List<Article> articles = null;
+        List<Article> articles;
 
 
 
@@ -206,9 +214,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 封装VO
         List<ArticleListVo> articleListVos = BeanCopyUtils.copyBeanList(articles, ArticleListVo.class);
 
-        PageVo pageVo = new PageVo();
-        pageVo.setRows(articleListVos);
-        pageVo.setTotal(pageInfo.getTotal());
+        PageVo pageVo = new PageVo(articleListVos, pageInfo.getTotal());
 
         return ResponseResult.okResult(pageVo);
 
@@ -306,9 +312,7 @@ public class ArticleServiceImpl implements ArticleService {
         // 校验tag状态是否正常
         if (tagIds != null && tagIds.size() != 0) {
             List<Tag> tags = tagDao.queryAllByIds(tagIds);
-            if (tags.stream().filter(tag -> tag.getStatus() == 0).count() != tagIds.size()) {
-                return false;
-            }
+            return tags.stream().filter(tag -> tag.getStatus() == 0).count() == tagIds.size();
         }
         return true;
     }

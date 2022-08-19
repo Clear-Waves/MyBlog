@@ -1,5 +1,6 @@
 package cdu.cyj.controller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.User;
 import cdu.cyj.enums.AppHttpCodeEnum;
@@ -20,6 +21,7 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("/login")
+    @SystemLog(businessName = "登录")
     @ApiOperation(value = "登录")
     public ResponseResult<?> portalLogin(@RequestBody User user) {
 
@@ -32,6 +34,7 @@ public class LoginController {
     }
 
     @PostMapping("/logout")
+    @SystemLog(businessName = "退出登录")
     @ApiOperation("退出登录")
     public ResponseResult<?> portalLogout() {
         return loginService.logout();

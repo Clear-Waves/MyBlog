@@ -1,5 +1,6 @@
 package cdu.cyj.controller;
 
+import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.service.UploadService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ public class UploadController {
 
     @PostMapping
     @PreAuthorize("hasAnyAuthority('content:write', 'content:article')")
+    @SystemLog(businessName = "上传图片")
     public ResponseResult<?> uploadImg(MultipartFile img) {
         return uploadService.uploadImg(img);
     }

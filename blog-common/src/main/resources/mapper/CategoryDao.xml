@@ -143,6 +143,7 @@
         <foreach collection="ids" item="id" open="(" close=")" separator=",">
             #{id}
         </foreach>
+        and status != -1
     </select>
     <select id="queryIdsByArticleIds" resultType="java.lang.Integer">
         SELECT category_id

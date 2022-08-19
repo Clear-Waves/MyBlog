@@ -16,7 +16,8 @@ public enum AppHttpCodeEnum {
     CONTENT_NOT_NULL(507, "评论不能为空"),
     FILE_TYPE_ERROR(508, "文件类型错误"),
     PARAMETER_ERROR(509, "参数错误"),
-    ARTICLE_NO_COMMENT(510,"文章不允许评论");
+    ARTICLE_NO_COMMENT(510,"文章不允许评论"),
+    PASSWORD_NOT_COMPLIANT(511, "密码复杂度不够，必须包含大小写字母，8-30个字符");
 
 
     int code;

@@ -1,9 +1,12 @@
 package cdu.cyj.service.impl;
 
+import cdu.cyj.constants.SystemConstants;
 import cdu.cyj.dao.RoleDao;
 import cdu.cyj.dao.UserDao;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.UserAddDto;
+import cdu.cyj.domain.dto.UserInfoUpdateDto;
+import cdu.cyj.domain.dto.UserRegisterDto;
 import cdu.cyj.domain.dto.UserUpdateDto;
 import cdu.cyj.domain.entity.Role;
 import cdu.cyj.domain.entity.User;
@@ -26,6 +29,8 @@ import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -70,10 +75,30 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseResult<?> updateUserInfo(User user) {
+    public ResponseResult<?> updateUserInfo(UserInfoUpdateDto userInfoUpdateDto) {
+
+        // 判断用户是否修改了邮箱/昵称
+        // 查询用户名/邮箱是否重复
+        UserInfoVo userInfo = (UserInfoVo) userInfo().getData();
+        if (!Objects.equals(userInfo.getEmail(), userInfoUpdateDto.getEmail())) {
+            if (userDao.emailExist(userInfoUpdateDto.getEmail()) != null) {
+                throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
+            }
+        }
+
+        if (!Objects.equals(userInfo.getNickName(), userInfoUpdateDto.getNickName())) {
+            if (userDao.nickNameExist(userInfoUpdateDto.getNickName()) != null) {
+                throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
+            }
+        }
+
+        // 类转换
+        User user = BeanCopyUtils.copyBean(userInfoUpdateDto, User.class);
 
         // 自动填充更新时间
         AutoFilledUtils.autoFillOnUpdate(user);
+        // id从当前用户获取
+        user.setId(SecurityUtils.getUserId());
         // 调用dao更新
         int count = userDao.update(user);
         // 返回结果
@@ -85,30 +110,39 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseResult<?> register(User user) {
+    public ResponseResult<?> register(UserRegisterDto userRegisterDto) {
 
         // 参数验证
-        if (StringUtil.isNullOrEmpty(user.getUserName()) || StringUtil.isNullOrEmpty(user.getNickName()) || StringUtil.isNullOrEmpty(user.getEmail()) || StringUtil.isNullOrEmpty(user.getPassWord())) {
+        if (StringUtil.isNullOrEmpty(userRegisterDto.getUserName()) || StringUtil.isNullOrEmpty(userRegisterDto.getNickName()) || StringUtil.isNullOrEmpty(userRegisterDto.getEmail()) || StringUtil.isNullOrEmpty(userRegisterDto.getPassWord())) {
             throw new SystemException(AppHttpCodeEnum.PARAMETER_ERROR);
         }
 
-        // TODO 判断密码是否合规
+        // 判断密码是否合规
+        boolean matches = Pattern.matches("(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z]).{8,30}", userRegisterDto.getPassWord());
+        if (!matches) {
+            throw new SystemException(AppHttpCodeEnum.PASSWORD_NOT_COMPLIANT);
+        }
 
         // 查询用户名/邮箱是否重复
-        if (userDao.userNameExist(user.getUserName()) != null) {
+        if (userDao.userNameExist(userRegisterDto.getUserName()) != null) {
             throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
         }
 
-        if (userDao.emailExist(user.getEmail()) != null) {
+        if (userDao.emailExist(userRegisterDto.getEmail()) != null) {
             throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
         }
 
-        if (userDao.nickNameExist(user.getNickName()) != null) {
+        if (userDao.nickNameExist(userRegisterDto.getNickName()) != null) {
             throw new SystemException(AppHttpCodeEnum.USERNAME_EXIST);
         }
+
+        // 类转换
+        User user = BeanCopyUtils.copyBean(userRegisterDto, User.class);
 
         // 密码加密存储
         user.setPassWord(passwordEncoder.encode(user.getPassWord()));
+        // 填充status
+        user.setStatus(SystemConstants.USER_NORMAL_STATUS);
         // 自动填充
         AutoFilledUtils.autoFillOnInsert(user);
         // 写入数据库

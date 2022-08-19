@@ -5,6 +5,7 @@ import cdu.cyj.dao.ArticleDao;
 import cdu.cyj.dao.CommentDao;
 import cdu.cyj.dao.UserDao;
 import cdu.cyj.domain.ResponseResult;
+import cdu.cyj.domain.dto.CommentAddDto;
 import cdu.cyj.domain.entity.Comment;
 import cdu.cyj.domain.vo.CommentVo;
 import cdu.cyj.domain.vo.PageVo;
@@ -38,7 +39,7 @@ public class CommentServiceImpl implements CommentService {
 
         // pageHelper
         PageHelper.startPage(pageNum, pageSize);
-        // 查询
+        // 查询跟评论
         List<Comment> commentList = commentDao.queryAllByStatusAndTypeAndArticleIdAndRootId(SystemConstants.COMMENT_NORMAL_STATUS, SystemConstants.ARTICLE_COMMENT, articleId, -1);
 
         PageInfo<Comment> pageInfo = new PageInfo<>(commentList);
@@ -59,18 +60,23 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public ResponseResult<?> addComment(Comment comment) {
+    public ResponseResult<?> addComment(CommentAddDto commentAddDto) {
 
-        if (StringUtil.isNullOrEmpty(comment.getContent())) {
+        // 校验内容是否为空
+        if (StringUtil.isNullOrEmpty(commentAddDto.getContent())) {
             return ResponseResult.errorResult(AppHttpCodeEnum.CONTENT_NOT_NULL);
         }
 
-        if (articleDao.queryById(comment.getArticleId()).getIsComment() == 1) {
+        // 检查文章是否允许评论
+        if (articleDao.queryById(commentAddDto.getArticleId()).getIsComment() == 1) {
             return ResponseResult.errorResult(AppHttpCodeEnum.ARTICLE_NO_COMMENT);
         }
 
+        // 类转换
+        Comment comment = BeanCopyUtils.copyBean(commentAddDto, Comment.class);
+        // 自动填充
         AutoFilledUtils.autoFillOnInsert(comment);
-
+        // 调用dao插入
         int count = commentDao.insert(comment);
 
         if (count > 0) {
