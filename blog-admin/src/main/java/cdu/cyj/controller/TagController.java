@@ -5,6 +5,7 @@ import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.TagAddDto;
 import cdu.cyj.domain.entity.Tag;
 import cdu.cyj.service.TagService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/content/tag")
+@Api(tags = "标签")
 public class TagController {
 
     @Autowired

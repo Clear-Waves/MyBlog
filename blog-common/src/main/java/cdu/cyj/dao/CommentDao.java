@@ -110,5 +110,12 @@ public interface CommentDao {
      */
     List<Comment> queryAllByStatusAndRootId(@Param("status")Integer status, @Param("rootId")Integer rootId);
 
+    /**
+     * 通过文章id批量删除评论
+     *
+     * @param ids 文章id列表
+     * @return 受影响行数
+     */
+    int deleteByArticleIdBatch(@Param("ids") List<Integer> ids);
 }
 

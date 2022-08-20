@@ -3,6 +3,7 @@ package cdu.cyj.service.impl;
 import cdu.cyj.constants.SystemConstants;
 import cdu.cyj.dao.ArticleDao;
 import cdu.cyj.dao.CategoryDao;
+import cdu.cyj.dao.CommentDao;
 import cdu.cyj.dao.TagDao;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.ArticleAddDto;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,6 +44,9 @@ public class ArticleServiceImpl implements ArticleService {
 
     @Autowired
     private TagDao tagDao;
+
+    @Autowired
+    private CommentDao commentDao;
 
     @Autowired
     private RedisCache redisCache;
@@ -86,8 +91,11 @@ public class ArticleServiceImpl implements ArticleService {
         // 插入 article, category—article, tag—article 三张表
         int countArticle = this.articleDao.insert(article);
         int countCategory = this.articleDao.insertArticleCategory(article.getId(), articleDto.getCategoryId());
-        int countTag = this.articleDao.insertArticleTag(article.getId(), articleDto.getTags());
-        if (countArticle == 1 && countCategory == 1 && countTag == articleDto.getTags().size()) {
+        int countTags = 0;
+        if (articleDto.getTags() != null && articleDto.getTags().size() > 0) {
+            countTags = this.articleDao.insertArticleTag(article.getId(), articleDto.getTags());
+        }
+        if (countArticle == 1 && countCategory == 1 && (articleDto.getTags() == null || countTags == articleDto.getTags().size())) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
@@ -145,7 +153,8 @@ public class ArticleServiceImpl implements ArticleService {
         // 删除相关中间表
         int countArticleTag = this.articleDao.deleteArticleTagByArticleId(id);
         int countArticleCategory = this.articleDao.deleteArticleCategoryByArticleId(id);
-        // todo 删除相关评论
+        // 删除相关评论
+        this.commentDao.deleteByArticleIdBatch(new ArrayList<>(id));
 
         if (countArticle == 1 & countArticleCategory == 1) {
             return ResponseResult.okResult();
@@ -163,7 +172,8 @@ public class ArticleServiceImpl implements ArticleService {
         int countArticleTag = this.articleDao.deleteArticleTagByArticleIdBatch(ids);
         int countArticleCategory = this.articleDao.deleteArticleCategoryByArticleIdBatch(ids);
 
-        // todo 删除相关评论
+        // 删除相关评论
+        this.commentDao.deleteByArticleIdBatch(ids);
 
         if (countArticle == ids.size() && countArticleCategory > 0) {
             return ResponseResult.okResult();

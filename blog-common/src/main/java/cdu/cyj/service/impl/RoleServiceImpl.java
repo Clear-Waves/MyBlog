@@ -79,9 +79,12 @@ public class RoleServiceImpl implements RoleService {
         // 先删除
         roleDao.deleteRoleMenuByRoleId(role.getId());
         // 后添加
-        int countRoleMenu = roleDao.insertRoleMenuBatch(role.getId(), menuIds);
+        int countRoleMenu = 0;
+        if (menuIds != null && menuIds.size() > 0) {
+            countRoleMenu = roleDao.insertRoleMenuBatch(role.getId(), menuIds);
+        }
         // 封装返回
-        if (countUpdate == 1 && countRoleMenu == menuIds.size()) {
+        if (countUpdate == 1 &&  (menuIds == null || countRoleMenu == menuIds.size())) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
@@ -99,9 +102,12 @@ public class RoleServiceImpl implements RoleService {
         // 调用dao插入角色表
         int insert = roleDao.insert(role);
         // 调用dao添加角色菜单中间表
-        int insertRoleMenuBatch = roleDao.insertRoleMenuBatch(role.getId(), menuIds);
+        int insertRoleMenuBatch = 0;
+        if (menuIds != null && menuIds.size() > 0) {
+            insertRoleMenuBatch = roleDao.insertRoleMenuBatch(role.getId(), menuIds);
+        }
         // 封装返回
-        if (insert == 1 && insertRoleMenuBatch == menuIds.size()) {
+        if (insert == 1 && (menuIds == null || insertRoleMenuBatch == menuIds.size())) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
@@ -110,6 +116,10 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public ResponseResult<?> changeRoleStatus(Map<String, Integer> map) {
+        // 参数验证
+        if (map.get("roleId") == null || map.get("status") == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAMETER_ERROR);
+        }
         // 解析参数
         Role role = new Role();
         role.setId(map.get("roleId"));

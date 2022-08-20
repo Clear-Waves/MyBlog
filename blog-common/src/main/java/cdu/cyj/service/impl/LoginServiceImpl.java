@@ -20,7 +20,7 @@ import javax.annotation.Resource;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-@Service
+@Service("portalLoginServiceImpl")
 public class LoginServiceImpl implements LoginService {
 
     @Resource

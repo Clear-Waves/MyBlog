@@ -261,6 +261,15 @@
     <delete id="deleteById">
         delete from table_comment where id = #{id}
     </delete>
+    <update id="deleteByArticleIdBatch">
+        update table_comment
+        set status = -1
+        where article_id in
+        <foreach collection="ids" item="id" separator="," open="(" close=")">
+            #{id}
+        </foreach>
+        and status != -1
+    </update>
 
 </mapper>
 

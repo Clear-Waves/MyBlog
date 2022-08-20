@@ -5,7 +5,10 @@ import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.LinkAddDto;
 import cdu.cyj.domain.dto.LinkUpdateDto;
 import cdu.cyj.domain.entity.Link;
+import cdu.cyj.enums.AppHttpCodeEnum;
+import cdu.cyj.exception.SystemException;
 import cdu.cyj.service.LinkService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -19,6 +22,7 @@ import java.util.Map;
 @RequestMapping("/content/link")
 @PreAuthorize("hasAuthority('content:link')")
 @Validated
+@Api(tags = "友链管理")
 public class LinkController {
 
     @Autowired
@@ -26,7 +30,7 @@ public class LinkController {
 
     @GetMapping("/list")
     @SystemLog(businessName = "获取友链列表")
-    public ResponseResult<?> listLink(Link link, Integer pageNum, Integer pageSize) {
+    public ResponseResult<?> listLink(Link link, @RequestParam(defaultValue = "1") Integer pageNum, @RequestParam(defaultValue = "10") Integer pageSize) {
         return linkService.listLink(link, pageNum, pageSize);
     }
 
@@ -57,6 +61,9 @@ public class LinkController {
     @PutMapping("/changeLinkStatus")
     @SystemLog(businessName = "更改友链信息")
     public ResponseResult<?> changeLinkStatus(@RequestBody Map<String, Integer> map) {
+        if (map.get("id") == null || map.get("status") == null) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAMETER_ERROR);
+        }
         return linkService.updateLink(map.get("id"), map.get("status"));
     }
 

@@ -6,6 +6,7 @@ import cdu.cyj.domain.dto.UserAddDto;
 import cdu.cyj.domain.dto.UserUpdateDto;
 import cdu.cyj.domain.entity.User;
 import cdu.cyj.service.UserService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 @RestController
 @Validated
+@Api(tags = "用户管理")
 public class UserController {
 
     @Autowired

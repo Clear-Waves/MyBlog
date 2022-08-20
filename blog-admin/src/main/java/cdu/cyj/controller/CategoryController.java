@@ -6,17 +6,20 @@ import cdu.cyj.domain.dto.CategoryAddDto;
 import cdu.cyj.domain.dto.CategoryUpdateDto;
 import cdu.cyj.domain.entity.Category;
 import cdu.cyj.service.CategoryService;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
 @RestController
 @RequestMapping("/content/category")
 @Validated
+@Api(tags = "分类管理")
 public class CategoryController {
 
     @Autowired
@@ -60,7 +63,7 @@ public class CategoryController {
     @DeleteMapping("/{ids}")
     @PreAuthorize("hasAuthority('content:category')")
     @SystemLog(businessName = "批量删除分类")
-    public ResponseResult<?> deleteCategory(@PathVariable List<Integer> ids) {
+    public ResponseResult<?> deleteCategory(@PathVariable @NotEmpty(message = "批量删除不能为空") List<Integer> ids) {
         return categoryService.deleteCategory(ids);
     }
 

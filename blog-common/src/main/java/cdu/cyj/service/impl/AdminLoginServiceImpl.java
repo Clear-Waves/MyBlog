@@ -3,7 +3,7 @@ package cdu.cyj.service.impl;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.entity.LoginUser;
 import cdu.cyj.domain.entity.User;
-import cdu.cyj.service.AdminLoginService;
+import cdu.cyj.service.LoginService;
 import cdu.cyj.utils.JwtUtil;
 import cdu.cyj.utils.RedisCache;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
-@Service
-public class AdminLoginServiceImpl implements AdminLoginService {
+@Service("adminLoginServiceImpl")
+public class AdminLoginServiceImpl implements LoginService {
 
     @Resource
     private AuthenticationManager manager;
