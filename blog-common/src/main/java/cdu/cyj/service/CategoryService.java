@@ -6,6 +6,7 @@ import cdu.cyj.domain.dto.CategoryUpdateDto;
 import cdu.cyj.domain.entity.Category;
 
 import java.util.List;
+import java.util.Map;
 
 public interface CategoryService {
 
@@ -64,4 +65,12 @@ public interface CategoryService {
      * @return 统一返回对象
      */
     ResponseResult<?> deleteCategory(List<Integer> ids);
+
+    /**
+     * 改变分类状态
+     *
+     * @param map 参数map
+     * @return 统一返回对象
+     */
+    ResponseResult<?> changeCategoryStatus(Map<String, Integer> map);
 }

@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -129,6 +130,27 @@ public class CategoryServiceImpl implements CategoryService {
         int delete = categoryDao.deleteByIdBatch(ids);
         // 返回
         if (delete == ids.size()) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult<?> changeCategoryStatus(Map<String, Integer> map) {
+        // 校验参数
+        if (map.get("categoryId") == null || map.get("status") == null || map.get("status") > 1 || map.get("status") < 0) {
+            return ResponseResult.errorResult(AppHttpCodeEnum.PARAMETER_ERROR);
+        }
+        // 调用dao跟新
+        Category category = new Category();
+        category.setId(map.get("categoryId"));
+        category.setStatus(map.get("status"));
+        // 自动填充
+        AutoFilledUtils.autoFillOnUpdate(category);
+        int update = categoryDao.update(category);
+        // 封装返回
+        if (update == 1) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);

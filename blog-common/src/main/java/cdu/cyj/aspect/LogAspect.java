@@ -36,7 +36,12 @@ public class LogAspect {
             ret = joinPoint.proceed();
             handleAfter(ret);
 
-        } finally {
+        } catch (Exception e) {
+            log.info("打印日志异常");
+            ret = joinPoint.proceed();
+            return ret;
+        }
+        finally {
             // 结束后换行
             log.info("=======End=======" + System.lineSeparator());
         }

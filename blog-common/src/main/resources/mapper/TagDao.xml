@@ -182,6 +182,7 @@
             </if>
         </set>
         where id = #{id}
+        and status != -1
     </update>
 
     <!--通过主键删除-->
@@ -195,6 +196,7 @@
         <foreach collection="ids" separator="," open="(" close=")" item="id">
             #{id}
         </foreach>
+        and status != -1
     </delete>
 
 </mapper>

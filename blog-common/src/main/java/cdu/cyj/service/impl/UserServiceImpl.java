@@ -203,10 +203,13 @@ public class UserServiceImpl implements UserService {
               2. 插入user-role中间表
         */
         int insertUser = userDao.insert(user);
-        int insertUserRole = userDao.insertUserRoleBatch(user.getId(), userAddDto.getRoleIds());
+        int insertUserRole = 0;
+        if (userAddDto.getRoleIds() != null && userAddDto.getRoleIds().size() != 0) {
+            insertUserRole = userDao.insertUserRoleBatch(user.getId(), userAddDto.getRoleIds());
+        }
 
         // 封装返回
-        if (insertUser == 1 && insertUserRole == userAddDto.getRoleIds().size()) {
+        if (insertUser == 1 && (userAddDto.getRoleIds() == null || insertUserRole == userAddDto.getRoleIds().size())) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
@@ -224,11 +227,14 @@ public class UserServiceImpl implements UserService {
         // 删除用户角色对应信息
         userDao.deleteUserRoleByUserId(user.getId());
         // 添加用户角色对应信息
-        Integer countRole = userDao.insertUserRoleBatch(user.getId(), userUpdateDto.getRoleIds());
+        int countRole = 0;
+        if (userUpdateDto.getRoleIds() != null && userUpdateDto.getRoleIds().size() != 0) {
+            countRole = userDao.insertUserRoleBatch(user.getId(), userUpdateDto.getRoleIds());
+        }
         // 更新用户信息
         int countUser = userDao.update(user);
         // 封装返回
-        if (countRole == userUpdateDto.getRoleIds().size() && countUser == 1) {
+        if (countUser == 1 && (userUpdateDto.getRoleIds() == null || countRole == userUpdateDto.getRoleIds().size())) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);

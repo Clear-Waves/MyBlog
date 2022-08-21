@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/content/category")
@@ -58,6 +59,13 @@ public class CategoryController {
     @SystemLog(businessName = "更新分类")
     public ResponseResult<?> updateCategory(@RequestBody @Valid CategoryUpdateDto categoryUpdateDto) {
         return categoryService.updateCategory(categoryUpdateDto);
+    }
+
+    @PutMapping("/changeStatus")
+    @PreAuthorize("hasAuthority('content:category')")
+    @SystemLog(businessName = "更改分类状态")
+    public ResponseResult<?> changeCategoryStatus(@RequestBody Map<String, Integer> map) {
+        return categoryService.changeCategoryStatus(map);
     }
 
     @DeleteMapping("/{ids}")

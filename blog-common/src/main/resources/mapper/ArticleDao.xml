@@ -342,7 +342,7 @@
         where id
         in
         <foreach collection="articleIds" item="articleId" open="(" close=")" separator=",">
-            #{ids}
+            #{articleId}
         </foreach>
     </update>
     <update id="deleteArticleTagByArticleIdBatch">

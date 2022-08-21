@@ -3,6 +3,7 @@ package cdu.cyj.service.impl;
 import cdu.cyj.dao.TagDao;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.TagAddDto;
+import cdu.cyj.domain.dto.TagUpdateDto;
 import cdu.cyj.domain.entity.Tag;
 import cdu.cyj.domain.vo.AdminTagVo;
 import cdu.cyj.domain.vo.PageVo;
@@ -76,6 +77,21 @@ public class TagServiceImpl implements TagService {
         int delete = tagDao.deleteByIdBatch(ids);
         // 封装返回
         if (delete == ids.size()) {
+            return ResponseResult.okResult();
+        } else {
+            return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @Override
+    public ResponseResult<?> updateTag(TagUpdateDto tagUpdateDto) {
+        // beanCopy
+        Tag tag = BeanCopyUtils.copyBean(tagUpdateDto, Tag.class);
+        // 自动填充
+        AutoFilledUtils.autoFillOnUpdate(tag);
+        // 调用dao进行更新
+        int update = tagDao.update(tag);
+        if (update == 1) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);

@@ -149,10 +149,10 @@
         select * from table_user
         <where>
             <if test="userName != null and userName != ''">
-                and user_name = #{userName}
+                and user_name like concat('%', #{userName}, '%')
             </if>
             <if test="phoneNumber != null and phoneNumber != ''">
-                and tel = #{phoneNumber}
+                and tel like concat('%', #{phoneNumber}, '%')
             </if>
             <if test="email != null and email != ''">
                 and email = #{email}

@@ -116,7 +116,7 @@
                 and id = #{id}
             </if>
             <if test="roleName != null and roleName != ''">
-                and role_name = #{roleName}
+                and role_name like concat('%', #{roleName}, '%')
             </if>
             <if test="roleKey != null and roleKey != ''">
                 and role_key = #{roleKey}
@@ -144,6 +144,7 @@
             </if>
             and status != -1
         </where>
+        order by role_sort
     </select>
     <select id="queryIdsByUserId" resultType="java.lang.Integer">
         select rid from table_user_role_ref

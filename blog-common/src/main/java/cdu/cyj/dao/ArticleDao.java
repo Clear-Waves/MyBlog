@@ -110,7 +110,7 @@ public interface ArticleDao {
      * @param ids 主键
      * @return 影响行数
      */
-    int deleteByIdBatch(@Param("ids") List<Integer> ids);
+    int deleteByIdBatch(@Param("articleIds") List<Integer> ids);
 
     /**
      * 查询热门文章，浏览量前十

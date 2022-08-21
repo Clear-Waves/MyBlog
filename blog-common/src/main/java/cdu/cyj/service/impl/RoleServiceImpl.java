@@ -140,11 +140,11 @@ public class RoleServiceImpl implements RoleService {
     @Override
     public ResponseResult<?> deleteRole(List<Integer> roleIds) {
         // 调用dao删除角色表
-        roleDao.deleteByIdBatch(roleIds);
+        int delete = roleDao.deleteByIdBatch(roleIds);
         // 调用dao删除角色-菜单表
-        int del = roleDao.deleteRoleMenuByRoleIdBatch(roleIds);
+        roleDao.deleteRoleMenuByRoleIdBatch(roleIds);
         // 封装返回
-        if (del == roleIds.size()) {
+        if (delete == roleIds.size()) {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);

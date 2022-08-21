@@ -2,6 +2,7 @@ package cdu.cyj.service;
 
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.TagAddDto;
+import cdu.cyj.domain.dto.TagUpdateDto;
 import cdu.cyj.domain.entity.Tag;
 
 import java.util.List;
@@ -46,4 +47,12 @@ public interface TagService {
      * @return 统一返回对象
      */
     ResponseResult<?> deleteByIds(List<Integer> ids);
+
+    /**
+     * 更新标签
+     *
+     * @param tagUpdateDto 标签跟新dto
+     * @return 统一返回对象
+     */
+    ResponseResult<?> updateTag(TagUpdateDto tagUpdateDto);
 }

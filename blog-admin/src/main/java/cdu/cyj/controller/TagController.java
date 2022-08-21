@@ -3,6 +3,7 @@ package cdu.cyj.controller;
 import cdu.cyj.annotation.SystemLog;
 import cdu.cyj.domain.ResponseResult;
 import cdu.cyj.domain.dto.TagAddDto;
+import cdu.cyj.domain.dto.TagUpdateDto;
 import cdu.cyj.domain.entity.Tag;
 import cdu.cyj.service.TagService;
 import io.swagger.annotations.Api;
@@ -46,6 +47,13 @@ public class TagController {
     @SystemLog(businessName = "新增标签")
     public ResponseResult<?> addTag(@RequestBody TagAddDto tagAddDto) {
         return tagService.addTag(tagAddDto);
+    }
+
+    @PutMapping
+    @PreAuthorize("hasAuthority('content:tag')")
+    @SystemLog(businessName = "更新标签")
+    public ResponseResult<?> updateTag(@RequestBody TagUpdateDto tagUpdateDto) {
+        return tagService.updateTag(tagUpdateDto);
     }
 
     @DeleteMapping("/{ids}")
