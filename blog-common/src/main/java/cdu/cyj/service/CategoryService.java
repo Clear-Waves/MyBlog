@@ -5,6 +5,7 @@ import cdu.cyj.domain.dto.CategoryAddDto;
 import cdu.cyj.domain.dto.CategoryUpdateDto;
 import cdu.cyj.domain.entity.Category;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -73,4 +74,6 @@ public interface CategoryService {
      * @return 统一返回对象
      */
     ResponseResult<?> changeCategoryStatus(Map<String, Integer> map);
+
+    void exportCategory(HttpServletResponse response);
 }

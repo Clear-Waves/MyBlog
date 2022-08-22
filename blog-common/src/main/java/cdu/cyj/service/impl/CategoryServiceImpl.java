@@ -15,11 +15,15 @@ import cdu.cyj.enums.AppHttpCodeEnum;
 import cdu.cyj.service.CategoryService;
 import cdu.cyj.utils.AutoFilledUtils;
 import cdu.cyj.utils.BeanCopyUtils;
+import com.alibaba.excel.EasyExcel;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,7 +70,7 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public ResponseResult<?> listCategory(Category category,  Integer pageNum, Integer pageSize) {
+    public ResponseResult<?> listCategory(Category category, Integer pageNum, Integer pageSize) {
 
         // 分页查询
         PageHelper.startPage(pageNum, pageSize);
@@ -154,6 +158,26 @@ public class CategoryServiceImpl implements CategoryService {
             return ResponseResult.okResult();
         } else {
             return ResponseResult.errorResult(AppHttpCodeEnum.SYSTEM_ERROR);
+        }
+    }
+
+    @Override
+    public void exportCategory(HttpServletResponse response) {
+
+        List<Category> categories = categoryDao.queryAll(new Category());
+        // 封装vo
+        List<AdminCategoryVo> adminCategoryVos = BeanCopyUtils.copyBeanList(categories, AdminCategoryVo.class);
+
+        try {
+            // 这里注意 有同学反应使用swagger 会导致各种问题，请直接用浏览器或者用postman
+            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+            response.setCharacterEncoding("utf-8");
+            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
+            String fileName = URLEncoder.encode("category", "UTF-8").replaceAll("\\+", "%20");
+            response.setHeader("Content-disposition", "attachment;filename=" + fileName + ".xlsx");
+            EasyExcel.write(response.getOutputStream(), AdminCategoryVo.class).sheet().doWrite(adminCategoryVos);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }
